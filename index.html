@@ -1,77 +1,35 @@
 <!DOCTYPE html><html><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
-<title>HOLO STRIKER FOOTBALL 2027 - REAL FOOTBALL</title>
-<style>*{margin:0;padding:0;box-sizing:border-box;touch-action:none}body{background:#0a1a0a;overflow:hidden;font-family:sans-serif}canvas{display:block;width:100vw;height:100vh}#ui{position:fixed;top:0;left:0;right:0;height:38px;background:#000;color:#0ff;border-bottom:2px solid #0ff;display:flex;justify-content:space-between;align-items:center;padding:0 10px;z-index:10;font-weight:900}#joy{position:fixed;left:12px;bottom:18px;width:110px;height:110px;border-radius:50%;border:3px solid #0ff;background:rgba(0,255,255,.1);z-index:10}#stick{position:absolute;left:30px;top:30px;width:50px;height:50px;border-radius:50%;background:#fff;box-shadow:0 0 12px #fff}#shot{position:fixed;left:140px;bottom:25px;width:72px;height:72px;border-radius:50%;border:3px solid #ffe600;color:#ffe600;display:grid;place-items:center;font-weight:900;background:rgba(255,230,0,.15);z-index:10}#run{position:fixed;right:14px;bottom:18px;width:68px;height:68px;border-radius:50%;border:3px solid #0ff;color:#0ff;display:grid;place-items:center;font-weight:900;z-index:10}</style>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,maximum-scale=1">
+<title>HOLO STRIKER 2027 - PRO</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;touch-action:none;font-family:Arial}body{background:#081808;overflow:hidden}canvas{display:block;width:100vw;height:100vh}
+#top{position:fixed;top:0;left:0;right:0;height:42px;background:linear-gradient(90deg,#000,#001a33);color:#0ff;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:20;font-weight:900;border-bottom:2px solid #0ff;font-size:14px}
+#joy{position:fixed;left:14px;bottom:18px;width:120px;height:120px;border-radius:50%;border:3px solid #00f0ff;background:rgba(0,240,255,.12);backdrop-filter:blur(4px);z-index:10}#stick{position:absolute;left:35px;top:35px;width:50px;height:50px;border-radius:50%;background:#fff;box-shadow:0 0 15px #fff,0 0 30px #0ff}
+#shot{position:fixed;left:152px;bottom:28px;width:74px;height:74px;border-radius:50%;border:3px solid #ffeb00;color:#ffeb00;font-weight:900;display:grid;place-items:center;background:rgba(255,235,0,.18);box-shadow:0 0 15px #ffeb00;z-index:10}#run{position:fixed;right:14px;bottom:20px;width:70px;height:70px;border-radius:50%;border:3px solid #00f0ff;color:#00f0ff;font-weight:900;display:grid;place-items:center;z-index:10;background:rgba(0,240,255,.12)}
+#goalFlash{position:fixed;inset:0;background:rgba(0,255,100,.25);display:none;place-items:center;color:#fff;font-size:48px;font-weight:900;z-index:30;text-shadow:0 0 20px #000}
+</style>
 <script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"></script>
 <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
 </head><body>
-<div id="ui"><span>HOLO STRIKER 2027</span><span id="score">0 - 0 | 78:32 LIVE</span><span>60FPS</span></div>
+<div id="top"><span>HOLO STRIKER 2027 • PRO</span><span id="score">0 - 0 | 78:32 LIVE</span><span>60FPS</span></div>
+<div id="goalFlash">GOAL!!!</div>
 <div id="joy"><div id="stick"></div></div><div id="shot">SHOT</div><div id="run">RUN</div>
 <script type="module">
 import * as THREE from 'three';
-const scene=new THREE.Scene(); scene.background=new THREE.Color(0x0d4a12);
-const camera=new THREE.PerspectiveCamera(55, innerWidth/innerHeight, 0.1, 100); camera.position.set(0,10,14);
-const renderer=new THREE.WebGLRenderer({antialias:false}); renderer.setSize(innerWidth,innerHeight); renderer.setPixelRatio(1); document.body.appendChild(renderer.domElement);
-scene.add(new THREE.AmbientLight(0xffffff,1.3));
-const sun=new THREE.DirectionalLight(0xffffff,1); sun.position.set(10,20,10); scene.add(sun);
+const scene=new THREE.Scene(); scene.background=new THREE.Color(0x0a1f0a);
+const camera=new THREE.PerspectiveCamera(58, innerWidth/innerHeight, 0.1, 150); camera.position.set(0,12,16);
+const renderer=new THREE.WebGLRenderer({antialias:false, powerPreference:"high-performance"}); renderer.setSize(innerWidth,innerHeight); renderer.setPixelRatio(Math.min(devicePixelRatio,1.5)); document.body.appendChild(renderer.domElement);
+scene.add(new THREE.AmbientLight(0xffffff,1.4));
+const sun=new THREE.DirectionalLight(0xffffff,1.1); sun.position.set(15,25,10); sun.castShadow=false; scene.add(sun);
 
-// REAL PITCH
-const pitch=new THREE.Mesh(new THREE.PlaneGeometry(36,68), new THREE.MeshStandardMaterial({color:0x1f8a1f}));
-pitch.rotation.x=-Math.PI/2; scene.add(pitch);
-function line(x,y,w,h){const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({color:0xffffff})); m.rotation.x=-Math.PI/2; m.position.set(x,0.02,y); scene.add(m);}
-line(0,0,0.15,68); line(0,-34,36,0.15); line(0,34,36,0.15); line(-18,0,0.15,68); line(18,0,0.15,68);
-line(0,-25,12,0.15); line(0,25,12,0.15);
+// STADIUM PITCH WITH STRIPES (PRO LOOK)
+const pitchGroup=new THREE.Group();
+for(let i=0;i<10;i++){ const stripe=new THREE.Mesh(new THREE.PlaneGeometry(36,6.8), new THREE.MeshStandardMaterial({color:i%2?0x1c8a1c:0x219a21})); stripe.rotation.x=-Math.PI/2; stripe.position.set(0,0,i*6.8-34); pitchGroup.add(stripe); }
+scene.add(pitchGroup);
+function addLine(x,z,w,h){const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h), new THREE.MeshBasicMaterial({color:0xffffff})); m.rotation.x=-Math.PI/2; m.position.set(x,0.03,z); scene.add(m);}
+addLine(0,0,0.2,68); addLine(0,-34,36,0.2); addLine(0,34,36,0.2); addLine(-18,0,0.2,68); addLine(18,0,0.2,68);
+addLine(0,-22,12,0.2); addLine(0,22,12,0.2); // penalty box lines
+addLine(-6,-29,12,0.2); addLine(6,-29,12,0.2); addLine(-6,29,12,0.2); addLine(6,29,12,0.2);
 
-// REAL HUMAN FOOTBALLER - NOT SOLDIER, NOT CAPSULE
-const player=new THREE.Group();
-const skin=new THREE.MeshStandardMaterial({color:0xd8a87d});
-const jersey=new THREE.MeshStandardMaterial({color:0x00ff88});
-const shortMat=new THREE.MeshStandardMaterial({color:0x111111});
-const body=new THREE.Mesh(new THREE.CapsuleGeometry(0.3,0.7,4,8), jersey); body.position.y=1.15; // jersey body
-const head=new THREE.Mesh(new THREE.SphereGeometry(0.32,12,12), skin); head.position.y=1.95;
-const armL=new THREE.Mesh(new THREE.CapsuleGeometry(0.08,0.5,4,6), skin); armL.position.set(-0.45,1.1,0); armL.rotation.z=0.2;
-const armR=armL.clone(); armR.position.x=0.45; armR.rotation.z=-0.2;
-const legL=new THREE.Mesh(new THREE.CapsuleGeometry(0.13,0.6,4,6), skin); legL.position.set(-0.16,0.35,0);
-const legR=legL.clone(); legR.position.x=0.16;
-const bootMat=new THREE.MeshStandardMaterial({color:0xffffff});
-const bootL=new THREE.Mesh(new THREE.BoxGeometry(0.22,0.12,0.35), bootMat); bootL.position.set(-0.16,0.05,0.1);
-const bootR=bootL.clone(); bootR.position.x=0.16;
-player.add(body,head,armL,armR,legL,legR,bootL,bootR); player.position.set(0,0,8); scene.add(player);
-
-// REAL WHITE FOOTBALL - NOT BLUE
-const ball=new THREE.Mesh(new THREE.SphereGeometry(0.24,16,16), new THREE.MeshStandardMaterial({color:0xffffff, roughness:0.3}));
-const ballPattern=new THREE.Mesh(new THREE.SphereGeometry(0.245,8,8), new THREE.MeshBasicMaterial({color:0x000000, wireframe:true})); ball.add(ballPattern);
-ball.position.set(0,0.24,9.2); scene.add(ball);
-
-// GOAL
-const goalMat=new THREE.MeshBasicMaterial({color:0xffffff});
-const p1=new THREE.Mesh(new THREE.BoxGeometry(0.12,2.2,0.12), goalMat); p1.position.set(-3.5,1.1,-29);
-const p2=p1.clone(); p2.position.x=3.5; const cross=new THREE.Mesh(new THREE.BoxGeometry(7.12,0.12,0.12), goalMat); cross.position.set(0,2.2,-29);
-scene.add(p1,p2,cross);
-
-// CONTROLS - WORKING 100%
-let sx=0,sy=0,running=false,walk=0,score=0, ballV=new THREE.Vector3(), hasBall=true;
-const joy=document.getElementById('joy'), stick=document.getElementById('stick');
-joy.addEventListener('touchmove',e=>{const r=joy.getBoundingClientRect();let x=e.touches[0].clientX-r.left-55,y=e.touches[0].clientY-r.top-55;let d=Math.hypot(x,y);if(d>35){x=x/d*35;y=y/d*35}stick.style.transform=`translate(${x}px,${y}px)`;sx=x/35;sy=y/35;},{passive:false});
-joy.addEventListener('touchend',()=>{stick.style.transform='';sx=0;sy=0;});
-document.getElementById('run').addEventListener('touchstart',()=>running=true); document.getElementById('run').addEventListener('touchend',()=>running=false);
-document.getElementById('shot').addEventListener('touchstart',()=>{
- if(player.position.distanceTo(ball.position)>2.2) return; hasBall=false; ballV.set((Math.random()-0.5)*0.2,0.35,-0.9-(running?0.5:0));
-});
-
-function loop(){
- requestAnimationFrame(loop);
- const sp=running?0.22:0.13;
- if(sx||sy){ player.position.x+=sx*sp; player.position.z+=sy*sp; player.position.x=Math.max(-16,Math.min(16,player.position.x)); player.position.z=Math.max(-28,Math.min(30,player.position.z)); player.rotation.y=Math.atan2(sx,sy); walk+=running?0.35:0.22; legL.rotation.x=Math.sin(walk)*0.8; legR.rotation.x=-Math.sin(walk)*0.8; armL.rotation.x=-Math.sin(walk)*0.5; armR.rotation.x=Math.sin(walk)*0.5;
-  if(hasBall){ const fx=player.position.x+Math.sin(player.rotation.y)*0.9; const fz=player.position.z+Math.cos(player.rotation.y)*0.9; ball.position.x+=(fx-ball.position.x)*0.4; ball.position.z+=(fz-ball.position.z)*0.4; }
- }
- if(!hasBall){ ball.position.add(ballV); ballV.y-=0.03; ballV.multiplyScalar(0.991); if(ball.position.y<0.24){ball.position.y=0.24; ballV.y*=-0.4; ballV.x*=0.8; ballV.z*=0.8;}
-  if(ball.position.z<-29 && Math.abs(ball.position.x)<3.5 && ball.position.y<2.2){ score++; document.getElementById('score').innerText=score+' - 0 | GOAL!!!'; setTimeout(()=>{document.getElementById('score').innerText=score+' - 0 | 78:32 LIVE'; ball.position.set(player.position.x,0.24,player.position.z+1); ballV.set(0,0,0); hasBall=true;},1000); return;}
-  if(ball.position.length()>40 || ballV.length()<0.02){ ball.position.set(player.position.x,0.24,player.position.z+1); ballV.set(0,0,0); hasBall=true; }
- }
- camera.position.x+=(player.position.x-camera.position.x)*0.08; camera.position.z+=(player.position.z+12-camera.position.z)*0.08; camera.lookAt(player.position.x,0.5,player.position.z-2);
- renderer.render(scene,camera);
-}
-loop();
-addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight);});
-</script></body></html>
+// REAL 3D GOAL WITH NET
+function makeGoal(z){ const g=new THREE.Group(); const mat=new THREE.MeshStandardMaterial({color:0xffffff});
+  const p1=new THREE.Mesh(new THREE.BoxGeometry(0.14,2.6
