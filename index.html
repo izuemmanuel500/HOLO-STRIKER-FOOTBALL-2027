@@ -1,608 +1,270 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>HOLO STRIKER FOOTBALL 2027</title>
 
-  <title>HOLO STRIKER FOOTBALL 2027</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;background:#06110a;font-family:Arial,sans-serif;touch-action:none}
+#game{position:fixed;inset:0}
+canvas{display:block;width:100%;height:100%}
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
-    }
+#hud{
+ position:fixed;top:10px;left:50%;transform:translateX(-50%);
+ z-index:10;width:94%;max-width:650px;
+ display:flex;align-items:center;justify-content:space-between;
+ color:white;pointer-events:none
+}
+.box{
+ background:rgba(0,0,0,.7);border:1px solid #ffffff35;
+ border-radius:12px;padding:8px 12px;
+ backdrop-filter:blur(8px);font-weight:900
+}
+#score{font-size:22px}
+#title{
+ position:fixed;top:62px;left:50%;transform:translateX(-50%);
+ color:white;font-size:18px;font-weight:900;letter-spacing:2px;
+ z-index:5;white-space:nowrap;text-shadow:0 3px 10px #000
+}
+#title span{color:#00e5ff}
 
-    html,
-    body {
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background: #05070a;
-      font-family: Arial, Helvetica, sans-serif;
-      touch-action: none;
-    }
+#message{
+ position:fixed;top:105px;left:50%;transform:translateX(-50%);
+ z-index:20;color:white;background:#000b;padding:8px 15px;
+ border-radius:20px;font-weight:900;opacity:0;transition:.2s;
+ pointer-events:none
+}
+#message.show{opacity:1}
 
-    #game {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-    }
+#joystick{
+ position:fixed;left:20px;bottom:25px;width:130px;height:130px;
+ border-radius:50%;border:2px solid #ffffff35;
+ background:#ffffff12;z-index:30;touch-action:none
+}
+#stick{
+ position:absolute;left:50%;top:50%;width:58px;height:58px;
+ margin:-29px;border-radius:50%;
+ background:#ffffff45;border:2px solid #ffffff70
+}
 
-    canvas {
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
+#buttons{
+ position:fixed;right:20px;bottom:28px;
+ display:flex;align-items:flex-end;gap:14px;z-index:30
+}
+button{
+ border-radius:50%;color:white;font-weight:900;
+ touch-action:none;border:2px solid #ffffff55
+}
+#skill{
+ width:68px;height:68px;background:#222d3d;font-size:11px
+}
+#shoot{
+ width:92px;height:92px;background:#008fe8;font-size:14px
+}
+#power{
+ position:fixed;left:50%;bottom:175px;transform:translateX(-50%);
+ width:220px;height:12px;background:#0009;border-radius:20px;
+ overflow:hidden;border:1px solid #fff4;z-index:30
+}
+#powerFill{height:100%;width:0;background:#00e5ff}
 
-    /* TOP HUD */
+#help{
+ position:fixed;bottom:7px;left:50%;transform:translateX(-50%);
+ color:#fff9;font-size:10px;z-index:5;white-space:nowrap
+}
 
-    #hud {
-      position: fixed;
-      top: env(safe-area-inset-top, 10px);
-      left: 50%;
-      transform: translateX(-50%);
-      width: min(94%, 700px);
-      padding: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      pointer-events: none;
-      z-index: 20;
-    }
-
-    .teamBox,
-    .scoreBox,
-    .timerBox {
-      background: rgba(5, 8, 12, 0.82);
-      border: 1px solid rgba(255,255,255,0.18);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 8px 30px rgba(0,0,0,.35);
-    }
-
-    .teamBox {
-      padding: 8px 12px;
-      border-radius: 12px;
-      color: white;
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: .5px;
-    }
-
-    .scoreBox {
-      padding: 8px 16px;
-      border-radius: 14px;
-      color: white;
-      font-size: 23px;
-      font-weight: 900;
-      min-width: 90px;
-      text-align: center;
-    }
-
-    .timerBox {
-      padding: 8px 12px;
-      border-radius: 12px;
-      color: #fff;
-      font-size: 12px;
-      font-weight: 800;
-    }
-
-    /* TITLE */
-
-    #brand {
-      position: fixed;
-      top: 82px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 10;
-      color: white;
-      font-size: clamp(15px, 4vw, 25px);
-      font-weight: 1000;
-      letter-spacing: 2px;
-      text-shadow: 0 3px 20px rgba(0,0,0,.8);
-      pointer-events: none;
-      white-space: nowrap;
-    }
-
-    #brand span {
-      color: #00e5ff;
-    }
-
-    /* MESSAGE */
-
-    #message {
-      position: fixed;
-      top: 125px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 25;
-      padding: 9px 15px;
-      border-radius: 20px;
-      background: rgba(0,0,0,.65);
-      color: white;
-      font-size: 12px;
-      font-weight: 800;
-      opacity: 0;
-      transition: opacity .2s;
-      pointer-events: none;
-    }
-
-    #message.show {
-      opacity: 1;
-    }
-
-    /* MOBILE CONTROLS */
-
-    #controls {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 30;
-    }
-
-    #joystick {
-      position: absolute;
-      left: 22px;
-      bottom: calc(25px + env(safe-area-inset-bottom));
-      width: 130px;
-      height: 130px;
-      border-radius: 50%;
-      background: rgba(255,255,255,.08);
-      border: 2px solid rgba(255,255,255,.18);
-      box-shadow: inset 0 0 25px rgba(0,0,0,.35);
-      pointer-events: auto;
-      touch-action: none;
-    }
-
-    #stick {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: 58px;
-      height: 58px;
-      transform: translate(-50%, -50%);
-      border-radius: 50%;
-      background: rgba(255,255,255,.25);
-      border: 2px solid rgba(255,255,255,.35);
-      box-shadow: 0 5px 20px rgba(0,0,0,.4);
-      pointer-events: none;
-    }
-
-    #actionButtons {
-      position: absolute;
-      right: 20px;
-      bottom: calc(28px + env(safe-area-inset-bottom));
-      display: flex;
-      align-items: flex-end;
-      gap: 14px;
-      pointer-events: auto;
-    }
-
-    .action {
-      border: 0;
-      color: white;
-      font-weight: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      box-shadow: 0 10px 25px rgba(0,0,0,.4);
-      touch-action: none;
-    }
-
-    #skillButton {
-      width: 68px;
-      height: 68px;
-      background: rgba(30, 40, 55, .9);
-      border: 2px solid rgba(255,255,255,.22);
-      font-size: 11px;
-    }
-
-    #shootButton {
-      width: 92px;
-      height: 92px;
-      background: rgba(0, 160, 255, .9);
-      border: 3px solid rgba(255,255,255,.45);
-      font-size: 14px;
-    }
-
-    #shootButton:active {
-      transform: scale(.94);
-    }
-
-    #skillButton:active {
-      transform: scale(.94);
-    }
-
-    /* POWER BAR */
-
-    #powerWrap {
-      position: fixed;
-      left: 50%;
-      bottom: calc(178px + env(safe-area-inset-bottom));
-      transform: translateX(-50%);
-      width: min(220px, 55vw);
-      height: 12px;
-      border-radius: 20px;
-      overflow: hidden;
-      background: rgba(0,0,0,.55);
-      border: 1px solid rgba(255,255,255,.2);
-      z-index: 35;
-      pointer-events: none;
-    }
-
-    #power {
-      width: 0%;
-      height: 100%;
-      background: linear-gradient(90deg, #00e5ff, #00ff85);
-      transition: width .05s linear;
-    }
-
-    /* HELP */
-
-    #help {
-      position: fixed;
-      left: 50%;
-      bottom: 8px;
-      transform: translateX(-50%);
-      color: rgba(255,255,255,.65);
-      font-size: 10px;
-      z-index: 20;
-      pointer-events: none;
-      white-space: nowrap;
-    }
-
-    @media (min-width: 800px) {
-      #joystick {
-        width: 145px;
-        height: 145px;
-      }
-
-      #shootButton {
-        width: 100px;
-        height: 100px;
-      }
-
-      #skillButton {
-        width: 74px;
-        height: 74px;
-      }
-    }
-
-    @media (max-height: 550px) {
-      #joystick {
-        width: 105px;
-        height: 105px;
-      }
-
-      #stick {
-        width: 48px;
-        height: 48px;
-      }
-
-      #shootButton {
-        width: 72px;
-        height: 72px;
-      }
-
-      #skillButton {
-        width: 55px;
-        height: 55px;
-      }
-
-      #powerWrap {
-        bottom: 120px;
-      }
-    }
-  </style>
-
-  <script type="importmap">
-  {
-    "imports": {
-      "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
-    }
-  }
-  </script>
+@media(max-height:550px){
+ #joystick{width:105px;height:105px}
+ #stick{width:48px;height:48px;margin:-24px}
+ #shoot{width:72px;height:72px}
+ #skill{width:55px;height:55px}
+ #power{bottom:120px}
+}
+</style>
 </head>
 
 <body>
 
-  <div id="game"></div>
+<div id="game"></div>
+
+<div id="hud">
+  <div class="box">🔵 HOLO FC</div>
+  <div class="box" id="score">0 - 0</div>
+  <div class="box" id="timer">00:00</div>
+</div>
 
-  <div id="hud">
-    <div class="teamBox">HOLO FC</div>
+<div id="title">HOLO <span>STRIKER</span> 2027</div>
+<div id="message"></div>
 
-    <div class="scoreBox">
-      <span id="homeScore">0</span>
-      <span> - </span>
-      <span id="awayScore">0</span>
-    </div>
+<div id="power">
+  <div id="powerFill"></div>
+</div>
 
-    <div class="timerBox" id="matchTime">00:00</div>
-  </div>
+<div id="joystick">
+  <div id="stick"></div>
+</div>
 
-  <div id="brand">
-    HOLO <span>STRIKER</span> 2027
-  </div>
+<div id="buttons">
+  <button id="skill">SKILL</button>
+  <button id="shoot">SHOOT</button>
+</div>
 
-  <div id="message"></div>
+<div id="help">MOVE • HOLD SHOOT • RELEASE TO KICK</div>
+
+<!-- IMPORTANT: normal script, NOT module -->
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 
-  <div id="powerWrap">
-    <div id="power"></div>
-  </div>
+<script>
+/* =========================================================
+   HOLO STRIKER FOOTBALL 2027
+   COMPLETE MOBILE 3D VERSION
+========================================================= */
 
-  <div id="controls">
+if(typeof THREE === "undefined"){
+ document.getElementById("title").textContent="THREE.JS FAILED TO LOAD";
+ throw new Error("Three.js failed to load");
+}
 
-    <div id="joystick">
-      <div id="stick"></div>
-    </div>
+const scene=new THREE.Scene();
 
-    <div id="actionButtons">
-      <button id="skillButton" class="action">
-        SKILL
-      </button>
+scene.background=new THREE.Color(0x07140c);
+scene.fog=new THREE.Fog(0x07140c,60,150);
 
-      <button id="shootButton" class="action">
-        SHOOT
-      </button>
-    </div>
+const camera=new THREE.PerspectiveCamera(
+ 55,
+ innerWidth/innerHeight,
+ .1,
+ 250
+);
 
-  </div>
+camera.position.set(0,14,20);
 
-  <div id="help">
-    MOVE • HOLD SHOOT TO CHARGE • RELEASE TO KICK
-  </div>
+const renderer=new THREE.WebGLRenderer({
+ antialias:true,
+ powerPreference:"high-performance"
+});
 
-  <script type="module">
+renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
+renderer.setSize(innerWidth,innerHeight);
+renderer.shadowMap.enabled=true;
 
-    import * as THREE from "three";
+document.getElementById("game").appendChild(renderer.domElement);
 
-    /* =========================================================
-       BASIC GAME SETUP
-    ========================================================= */
 
-    const container = document.getElementById("game");
+/* =========================================================
+   LIGHTING
+========================================================= */
 
-    const scene = new THREE.Scene();
+scene.add(
+ new THREE.HemisphereLight(
+  0xffffff,
+  0x183020,
+  2.2
+ )
+);
 
-    scene.background = new THREE.Color(0x061018);
+const sun=new THREE.DirectionalLight(
+  0xffffff,
+  3
+);
 
-    scene.fog = new THREE.Fog(
-      0x061018,
-      45,
-      150
-    );
+sun.position.set(20,35,15);
+sun.castShadow=true;
+sun.shadow.mapSize.set(1024,1024);
 
-    const camera = new THREE.PerspectiveCamera(
-      55,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      300
-    );
+scene.add(sun);
 
-    camera.position.set(
-      0,
-      14,
-      18
-    );
 
-    const renderer = new THREE.WebGLRenderer({
-      antialias: true,
-      powerPreference: "high-performance"
-    });
+/* =========================================================
+   STADIUM GROUND
+========================================================= */
 
-    renderer.setPixelRatio(
-      Math.min(window.devicePixelRatio, 1.7)
-    );
+const ground=new THREE.Mesh(
+ new THREE.PlaneGeometry(110,110),
+ new THREE.MeshStandardMaterial({
+  color:0x071b10,
+  roughness:1
+ })
+);
 
-    renderer.setSize(
-      window.innerWidth,
-      window.innerHeight
-    );
+ground.rotation.x=-Math.PI/2;
+ground.position.y=-.08;
+ground.receiveShadow=true;
+scene.add(ground);
 
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-    container.appendChild(renderer.domElement);
+/* =========================================================
+   PITCH
+========================================================= */
 
+const PW=34;
+const PL=58;
 
-    /* =========================================================
-       LIGHTING
-    ========================================================= */
-
-    const ambient = new THREE.HemisphereLight(
-      0xffffff,
-      0x182230,
-      1.7
-    );
-
-    scene.add(ambient);
-
-    const sun = new THREE.DirectionalLight(
-      0xffffff,
-      2.5
-    );
-
-    sun.position.set(
-      15,
-      30,
-      10
-    );
-
-    sun.castShadow = true;
-
-    sun.shadow.mapSize.width = 1024;
-    sun.shadow.mapSize.height = 1024;
-
-    scene.add(sun);
-
-
-    /* =========================================================
-       PITCH
-    ========================================================= */
-
-    const pitchWidth = 32;
-    const pitchLength = 56;
-
-    const pitch = new THREE.Mesh(
-      new THREE.PlaneGeometry(
-        pitchWidth,
-        pitchLength
-      ),
-      new THREE.MeshStandardMaterial({
-        color: 0x08753b,
-        roughness: 0.9
-      })
-    );
-
-    pitch.rotation.x = -Math.PI / 2;
-    pitch.receiveShadow = true;
-
-    scene.add(pitch);
-
-
-    /* FIELD LINES */
-
-    function fieldLine(
-      x,
-      z,
-      width,
-      height,
-      rotation = 0
-    ) {
-
-      const line = new THREE.Mesh(
-        new THREE.PlaneGeometry(
-          width,
-          height
-        ),
-        new THREE.MeshBasicMaterial({
-          color: 0xffffff,
-          side: THREE.DoubleSide
-        })
-      );
-
-      line.rotation.x = -Math.PI / 2;
-      line.rotation.z = rotation;
-
-      line.position.set(
-        x,
-        0.025,
-        z
-      );
-
-      scene.add(line);
-
-      return line;
-    }
-
-    fieldLine(
-      0,
-      -pitchLength / 2,
-      pitchWidth,
-      .18
-    );
-
-    fieldLine(
-      0,
-      pitchLength / 2,
-      pitchWidth,
-      .18
-    );
-
-    fieldLine(
-      -pitchWidth / 2,
-      0,
-      .18,
-      pitchLength
-    );
-
-    fieldLine(
-      pitchWidth / 2,
-      0,
-      .18,
-      pitchLength
-    );
-
-    fieldLine(
-      0,
-      0,
-      pitchWidth,
-      .14
-    );
-
-    /* CENTER CIRCLE */
-
-    const centerCircle = new THREE.Mesh(
-      new THREE.RingGeometry(
-        4.8,
-        4.95,
-        64
-      ),
-      new THREE.MeshBasicMaterial({
-        color: 0xffffff,
-        side: THREE.DoubleSide
-      })
-    );
-
-    centerCircle.rotation.x = -Math.PI / 2;
-    centerCircle.position.y = .03;
-
-    scene.add(centerCircle);
-
-
-    /* =========================================================
-       PENALTY AREAS
-    ========================================================= */
-
-    function createPenaltyArea(z) {
-
-      const area = new THREE.LineSegments(
-        new THREE.EdgesGeometry(
-          new THREE.BoxGeometry(
-            18,
-            .02,
-            10
-          )
-        ),
-        new THREE.LineBasicMaterial({
-          color: 0xffffff
-        })
-      );
-
-      area.position.set(
-        0,
-        .04,
-        z
-      );
-
-      scene.add(area);
-    }
-
-    createPenaltyArea(-23);
-    createPenaltyArea(23);
-
-
-    /* =========================================================
-       GOALS
-    ========================================================= */
-
-    function createGoal(z) {
-
-      const group = new THREE.Group();
-
-      const material = new THREE.MeshStandardMaterial({
-        color: 0xffffff,
-        metalness: .1,
-        roughness: .45
-      });
-
-      const postGeometry =
-        new THREE.CylinderGeometry(
-          .16,
-          .16,
-          4.
+const pitch=new THREE.Mesh(
+ new THREE.PlaneGeometry(PW,PL),
+ new THREE.MeshStandardMaterial({
+  color:0x13803d,
+  roughness:.9
+ })
+);
+
+pitch.rotation.x=-Math.PI/2;
+pitch.receiveShadow=true;
+scene.add(pitch);
+
+
+/* GRASS STRIPES */
+
+for(let i=-8;i<9;i++){
+
+ const stripe=new THREE.Mesh(
+  new THREE.PlaneGeometry(2,PL),
+  new THREE.MeshBasicMaterial({
+   color:i%2===0?0x168a43:0x117539,
+   transparent:true,
+   opacity:.25
+  })
+ );
+
+ stripe.rotation.x=-Math.PI/2;
+ stripe.position.set(i*2,0.01,0);
+
+ scene.add(stripe);
+}
+
+
+/* =========================================================
+   FIELD LINES
+========================================================= */
+
+function line(x1,z1,x2,z2){
+
+ const geometry=new THREE.BufferGeometry();
+
+ geometry.setFromPoints([
+  new THREE.Vector3(x1,.035,z1),
+  new THREE.Vector3(x2,.035,z2)
+ ]);
+
+ const l=new THREE.Line(
+  geometry,
+  new THREE.LineBasicMaterial({color:0xffffff})
+ );
+
+ scene.add(l);
+}
+
+line(-17,-29,17,-29);
+line(-17,29,17,29);
+line(-17,-29,-17,29);
+line(17,-29,17,29);
+line(-17,0,17,0);
+
+
+/* CENTER CIRCLE */
+
+const circle=[];
+
+for(let i=0;i<=80
