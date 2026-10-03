@@ -1,35 +1,636 @@
-<!DOCTYPE html><html><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,maximum-scale=1">
-<title>HOLO STRIKER 2027 - PRO</title>
-<style>*{margin:0;padding:0;box-sizing:border-box;touch-action:none;font-family:Arial}body{background:#081808;overflow:hidden}canvas{display:block;width:100vw;height:100vh}
-#top{position:fixed;top:0;left:0;right:0;height:42px;background:linear-gradient(90deg,#000,#001a33);color:#0ff;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:20;font-weight:900;border-bottom:2px solid #0ff;font-size:14px}
-#joy{position:fixed;left:14px;bottom:18px;width:120px;height:120px;border-radius:50%;border:3px solid #00f0ff;background:rgba(0,240,255,.12);backdrop-filter:blur(4px);z-index:10}#stick{position:absolute;left:35px;top:35px;width:50px;height:50px;border-radius:50%;background:#fff;box-shadow:0 0 15px #fff,0 0 30px #0ff}
-#shot{position:fixed;left:152px;bottom:28px;width:74px;height:74px;border-radius:50%;border:3px solid #ffeb00;color:#ffeb00;font-weight:900;display:grid;place-items:center;background:rgba(255,235,0,.18);box-shadow:0 0 15px #ffeb00;z-index:10}#run{position:fixed;right:14px;bottom:20px;width:70px;height:70px;border-radius:50%;border:3px solid #00f0ff;color:#00f0ff;font-weight:900;display:grid;place-items:center;z-index:10;background:rgba(0,240,255,.12)}
-#goalFlash{position:fixed;inset:0;background:rgba(0,255,100,.25);display:none;place-items:center;color:#fff;font-size:48px;font-weight:900;z-index:30;text-shadow:0 0 20px #000}
-</style>
-<script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"></script>
-<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
-</head><body>
-<div id="top"><span>HOLO STRIKER 2027 • PRO</span><span id="score">0 - 0 | 78:32 LIVE</span><span>60FPS</span></div>
-<div id="goalFlash">GOAL!!!</div>
-<div id="joy"><div id="stick"></div></div><div id="shot">SHOT</div><div id="run">RUN</div>
-<script type="module">
-import * as THREE from 'three';
-const scene=new THREE.Scene(); scene.background=new THREE.Color(0x0a1f0a);
-const camera=new THREE.PerspectiveCamera(58, innerWidth/innerHeight, 0.1, 150); camera.position.set(0,12,16);
-const renderer=new THREE.WebGLRenderer({antialias:false, powerPreference:"high-performance"}); renderer.setSize(innerWidth,innerHeight); renderer.setPixelRatio(Math.min(devicePixelRatio,1.5)); document.body.appendChild(renderer.domElement);
-scene.add(new THREE.AmbientLight(0xffffff,1.4));
-const sun=new THREE.DirectionalLight(0xffffff,1.1); sun.position.set(15,25,10); sun.castShadow=false; scene.add(sun);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HOLO STRIKER FOOTBALL</title>
 
-// STADIUM PITCH WITH STRIPES (PRO LOOK)
-const pitchGroup=new THREE.Group();
-for(let i=0;i<10;i++){ const stripe=new THREE.Mesh(new THREE.PlaneGeometry(36,6.8), new THREE.MeshStandardMaterial({color:i%2?0x1c8a1c:0x219a21})); stripe.rotation.x=-Math.PI/2; stripe.position.set(0,0,i*6.8-34); pitchGroup.add(stripe); }
-scene.add(pitchGroup);
-function addLine(x,z,w,h){const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h), new THREE.MeshBasicMaterial({color:0xffffff})); m.rotation.x=-Math.PI/2; m.position.set(x,0.03,z); scene.add(m);}
-addLine(0,0,0.2,68); addLine(0,-34,36,0.2); addLine(0,34,36,0.2); addLine(-18,0,0.2,68); addLine(18,0,0.2,68);
-addLine(0,-22,12,0.2); addLine(0,22,12,0.2); // penalty box lines
-addLine(-6,-29,12,0.2); addLine(6,-29,12,0.2); addLine(-6,29,12,0.2); addLine(6,29,12,0.2);
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
 
-// REAL 3D GOAL WITH NET
-function makeGoal(z){ const g=new THREE.Group(); const mat=new THREE.MeshStandardMaterial({color:0xffffff});
-  const p1=new THREE.Mesh(new THREE.BoxGeometry(0.14,2.6
+    body {
+      background: #07110b;
+      color: white;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    .game {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* SCOREBOARD */
+    .topbar {
+      height: 70px;
+      background: #111820;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      border-bottom: 2px solid #26333d;
+      z-index: 10;
+    }
+
+    .team {
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    .score {
+      font-size: 28px;
+      font-weight: 900;
+    }
+
+    .timer {
+      color: #80ff9a;
+      font-size: 14px;
+      margin-top: 3px;
+    }
+
+    /* PITCH */
+    .pitch-area {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+      overflow: hidden;
+    }
+
+    .pitch {
+      position: relative;
+      width: min(94vw, 900px);
+      height: min(72vh, 600px);
+      background:
+        repeating-linear-gradient(
+          90deg,
+          #16863b 0px,
+          #16863b 70px,
+          #197f39 70px,
+          #197f39 140px
+        );
+      border: 4px solid white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 0 35px rgba(0, 255, 100, 0.18);
+    }
+
+    /* HALF WAY */
+    .halfway {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      height: 100%;
+      width: 3px;
+      background: white;
+      transform: translateX(-50%);
+    }
+
+    .center-circle {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 130px;
+      height: 130px;
+      border: 3px solid white;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .center-dot {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 8px;
+      height: 8px;
+      background: white;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* GOAL BOXES */
+    .box-left,
+    .box-right {
+      position: absolute;
+      top: 50%;
+      width: 90px;
+      height: 230px;
+      border: 3px solid white;
+      transform: translateY(-50%);
+    }
+
+    .box-left {
+      left: 0;
+      border-left: 0;
+    }
+
+    .box-right {
+      right: 0;
+      border-right: 0;
+    }
+
+    .goal-left,
+    .goal-right {
+      position: absolute;
+      top: 50%;
+      width: 18px;
+      height: 100px;
+      background: #eee;
+      border: 2px solid #222;
+      transform: translateY(-50%);
+    }
+
+    .goal-left {
+      left: -20px;
+    }
+
+    .goal-right {
+      right: -20px;
+    }
+
+    /* PLAYERS */
+    .player {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: bold;
+      border: 2px solid white;
+      box-shadow: 0 3px 8px rgba(0,0,0,.5);
+      z-index: 4;
+    }
+
+    .blue {
+      background: #1677ff;
+    }
+
+    .red {
+      background: #e52c38;
+    }
+
+    .player.active {
+      outline: 4px solid #ffe600;
+      box-shadow: 0 0 18px #ffe600;
+    }
+
+    /* BALL */
+    .ball {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      background: white;
+      border: 2px solid #222;
+      border-radius: 50%;
+      z-index: 6;
+      box-shadow: 0 2px 5px rgba(0,0,0,.6);
+    }
+
+    /* CONTROLS */
+    .controls {
+      position: absolute;
+      bottom: 15px;
+      left: 15px;
+      right: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      pointer-events: none;
+      z-index: 20;
+    }
+
+    .joystick {
+      width: 125px;
+      height: 125px;
+      border-radius: 50%;
+      background: rgba(10,20,25,.7);
+      border: 2px solid rgba(255,255,255,.35);
+      position: relative;
+      pointer-events: auto;
+      touch-action: none;
+    }
+
+    .stick {
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.25);
+      border: 2px solid white;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .action-buttons {
+      display: grid;
+      grid-template-columns: repeat(2, 70px);
+      gap: 12px;
+      pointer-events: auto;
+    }
+
+    .action-buttons button {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      border: 2px solid white;
+      color: white;
+      background: rgba(15,25,35,.85);
+      font-weight: bold;
+      font-size: 12px;
+    }
+
+    .action-buttons button:active {
+      transform: scale(.92);
+      background: #176bff;
+    }
+
+    .pass {
+      background: rgba(0,120,255,.7) !important;
+    }
+
+    .shoot {
+      background: rgba(220,35,45,.8) !important;
+    }
+
+    .sprint {
+      background: rgba(20,160,80,.8) !important;
+    }
+
+    .tackle {
+      background: rgba(210,150,20,.8) !important;
+    }
+
+    /* STATUS */
+    .status {
+      position: absolute;
+      top: 85px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,.7);
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 12px;
+      z-index: 30;
+    }
+
+    @media (max-width: 600px) {
+      .topbar {
+        height: 58px;
+        padding: 0 10px;
+      }
+
+      .team {
+        font-size: 11px;
+      }
+
+      .score {
+        font-size: 22px;
+      }
+
+      .pitch-area {
+        padding: 8px;
+      }
+
+      .pitch {
+        width: 96vw;
+        height: 65vh;
+      }
+
+      .center-circle {
+        width: 90px;
+        height: 90px;
+      }
+
+      .controls {
+        bottom: 8px;
+        left: 8px;
+        right: 8px;
+      }
+
+      .joystick {
+        width: 105px;
+        height: 105px;
+      }
+
+      .stick {
+        width: 48px;
+        height: 48px;
+      }
+
+      .action-buttons {
+        grid-template-columns: repeat(2, 60px);
+        gap: 8px;
+      }
+
+      .action-buttons button {
+        width: 60px;
+        height: 60px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="game">
+
+  <!-- SCOREBOARD -->
+  <div class="topbar">
+    <div class="team">HOLO FC</div>
+
+    <div style="text-align:center;">
+      <div class="score">
+        <span id="homeScore">0</span>
+        -
+        <span id="awayScore">0</span>
+      </div>
+      <div class="timer" id="timer">00:00</div>
+    </div>
+
+    <div class="team">RIVALS FC</div>
+  </div>
+
+  <!-- GAME -->
+  <div class="pitch-area">
+
+    <div class="status" id="status">
+      HOLO STRIKER • READY
+    </div>
+
+    <div class="pitch" id="pitch">
+
+      <div class="halfway"></div>
+      <div class="center-circle"></div>
+      <div class="center-dot"></div>
+
+      <div class="box-left"></div>
+      <div class="box-right"></div>
+
+      <div class="goal-left"></div>
+      <div class="goal-right"></div>
+
+      <!-- BLUE TEAM -->
+      <div class="player blue active" id="p1"
+           style="left:18%; top:48%;">10</div>
+
+      <div class="player blue"
+           style="left:30%; top:25%;">7</div>
+
+      <div class="player blue"
+           style="left:30%; top:70%;">11</div>
+
+      <div class="player blue"
+           style="left:43%; top:48%;">9</div>
+
+      <div class="player blue"
+           style="left:8%; top:48%;">1</div>
+
+      <!-- RED TEAM -->
+      <div class="player red"
+           style="left:78%; top:48%;">9</div>
+
+      <div class="player red"
+           style="left:68%; top:25%;">7</div>
+
+      <div class="player red"
+           style="left:68%; top:70%;">11</div>
+
+      <div class="player red"
+           style="left:57%; top:48%;">8</div>
+
+      <div class="player red"
+           style="left:90%; top:48%;">1</div>
+
+      <!-- BALL -->
+      <div class="ball" id="ball"
+           style="left:47%; top:48%;"></div>
+
+    </div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+
+    <div class="joystick" id="joystick">
+      <div class="stick" id="stick"></div>
+    </div>
+
+    <div class="action-buttons">
+      <button class="pass" id="passBtn">PASS</button>
+      <button class="shoot" id="shootBtn">SHOOT</button>
+      <button class="sprint" id="sprintBtn">SPRINT</button>
+      <button class="tackle" id="tackleBtn">TACKLE</button>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  const pitch = document.getElementById("pitch");
+  const player = document.getElementById("p1");
+  const ball = document.getElementById("ball");
+  const stick = document.getElementById("stick");
+  const joystick = document.getElementById("joystick");
+
+  const statusText = document.getElementById("status");
+  const timerText = document.getElementById("timer");
+
+  let playerX = 18;
+  let playerY = 48;
+
+  let joystickActive = false;
+
+  let gameSeconds = 0;
+
+  /* MATCH TIMER */
+  setInterval(() => {
+    gameSeconds++;
+
+    const minutes = Math.floor(gameSeconds / 60)
+      .toString()
+      .padStart(2, "0");
+
+    const seconds = (gameSeconds % 60)
+      .toString()
+      .padStart(2, "0");
+
+    timerText.textContent = minutes + ":" + seconds;
+  }, 1000);
+
+
+  /* MOVE PLAYER */
+  function movePlayer(dx, dy) {
+
+    playerX += dx;
+    playerY += dy;
+
+    if (playerX < 3) playerX = 3;
+    if (playerX > 94) playerX = 94;
+
+    if (playerY < 5) playerY = 5;
+    if (playerY > 88) playerY = 88;
+
+    player.style.left = playerX + "%";
+    player.style.top = playerY + "%";
+
+    /* Keep ball near player */
+    ball.style.left = (playerX + 3) + "%";
+    ball.style.top = (playerY + 1) + "%";
+
+    statusText.textContent = "PLAYER 10 • MOVING";
+  }
+
+
+  /* KEYBOARD CONTROLS */
+  document.addEventListener("keydown", (event) => {
+
+    const speed = 1.2;
+
+    if (event.key === "ArrowUp" || event.key.toLowerCase() === "w") {
+      movePlayer(0, -speed);
+    }
+
+    if (event.key === "ArrowDown" || event.key.toLowerCase() === "s") {
+      movePlayer(0, speed);
+    }
+
+    if (event.key === "ArrowLeft" || event.key.toLowerCase() === "a") {
+      movePlayer(-speed, 0);
+    }
+
+    if (event.key === "ArrowRight" || event.key.toLowerCase() === "d") {
+      movePlayer(speed, 0);
+    }
+  });
+
+
+  /* JOYSTICK */
+  function joystickMove(clientX, clientY) {
+
+    const rect = joystick.getBoundingClientRect();
+
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    let dx = clientX - centerX;
+    let dy = clientY - centerY;
+
+    const maxDistance = 42;
+
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    if (distance > maxDistance) {
+      dx = dx / distance * maxDistance;
+      dy = dy / distance * maxDistance;
+    }
+
+    stick.style.left = `calc(50% + ${dx}px)`;
+    stick.style.top = `calc(50% + ${dy}px)`;
+
+    const moveX = dx / maxDistance * 0.8;
+    const moveY = dy / maxDistance * 0.8;
+
+    movePlayer(moveX, moveY);
+  }
+
+
+  joystick.addEventListener("pointerdown", (e) => {
+    joystickActive = true;
+    joystick.setPointerCapture(e.pointerId);
+    joystickMove(e.clientX, e.clientY);
+  });
+
+
+  joystick.addEventListener("pointermove", (e) => {
+    if (!joystickActive) return;
+
+    joystickMove(e.clientX, e.clientY);
+  });
+
+
+  joystick.addEventListener("pointerup", () => {
+    joystickActive = false;
+
+    stick.style.left = "50%";
+    stick.style.top = "50%";
+
+    statusText.textContent = "HOLO STRIKER • READY";
+  });
+
+
+  /* PASS */
+  document.getElementById("passBtn").addEventListener("click", () => {
+
+    statusText.textContent = "PASS • BALL PASSED";
+
+    ball.style.left = (playerX + 12) + "%";
+
+    setTimeout(() => {
+      statusText.textContent = "PLAYER 10 • READY";
+    }, 900);
+  });
+
+
+  /* SHOOT */
+  document.getElementById("shootBtn").addEventListener("click", () => {
+
+    statusText.textContent = "SHOOT • ⚽";
+
+    ball.style.left = "88%";
+
+    setTimeout(() => {
+
+      statusText.textContent = "SHOT TAKEN";
+
+      setTimeout(() => {
+        ball.style.left = (playerX + 3) + "%";
+        ball.style.top = (playerY + 1) + "%";
+        statusText.textContent = "PLAYER 10 • READY";
+      }, 900);
+
+    }, 500);
+  });
+
+
+  /* SPRINT */
+  document.getElementById("sprintBtn").addEventListener("click", () => {
+
+    statusText.textContent = "SPRINT • ⚡";
+
+    movePlayer(5, 0);
+
+    setTimeout(() => {
+      statusText.textContent = "PLAYER 10 • READY";
+    }, 700);
+  });
+
+
+  /* TACKLE */
+  document.getElementById("tackleBtn").addEventListener("click", () => {
+
+    statusText.textContent = "TACKLE • DEFENDING";
+
+    setTimeout(() => {
+      statusText.textContent = "PLAYER 10 • READY";
+    }, 800);
+  });
+
+</script>
+
+</body>
+  </html>
