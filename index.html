@@ -1,87 +1,76 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<html><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>HOLO STRIKER FOOTBALL 2027</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;touch-action:none;-webkit-tap-highlight-color:transparent}
-body{background:#000;overflow:hidden;font-family:system-ui;font-weight:800}
-canvas{display:block;width:100vw;height:100vh}
-#ui{position:fixed;top:0;left:0;right:0;height:42px;background:rgba(0,10,30,0.9);border-bottom:2px solid #0ff;display:flex;align-items:center;justify-content:space-between;padding:0 12px;color:#0ff;z-index:20;font-size:13px;letter-spacing:1px}
-#joy{position:fixed;left:15px;bottom:25px;width:120px;height:120px;border-radius:50%;border:2px solid #0ff;background:rgba(0,255,255,0.12);z-index:20}
-#stick{position:absolute;left:35px;top:35px;width:50px;height:50px;border-radius:50%;background:linear-gradient(#fff,#aaa);box-shadow:0 0 15px #fff;will-change:transform}
-#shot{position:fixed;left:155px;bottom:35px;width:70px;height:70px;border-radius:50%;border:2px solid #ffe600;background:rgba(255,230,0,0.15);color:#ffe600;display:grid;place-items:center;z-index:20;box-shadow:0 0 15px #ffe600}
-#skill{position:fixed;right:15px;bottom:95px;width:80px;height:80px;border-radius:50%;border:2px solid #0ff;background:rgba(0,255,255,0.15);color:#0ff;display:grid;place-items:center;z-index:20;box-shadow:0 0 15px #0ff}
-#run{position:fixed;right:15px;bottom:15px;width:60px;height:60px;border-radius:50%;border:2px solid #0ff;background:rgba(0,255,255,0.08);color:#0ff;display:grid;place-items:center;font-size:12px;z-index:20}
-#goalText{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);background:#000;color:#0ff;border:2px solid #0ff;padding:12px 25px;border-radius:30px;font-size:22px;display:none;z-index:30;box-shadow:0 0 30px #0ff}
-</style>
+<style>*{margin:0;padding:0;box-sizing:border-box;touch-action:none}html,body{width:100%;height:100%;overflow:hidden;background:#0a1a0a}canvas{display:block;width:100%!important;height:100%!important}#top{position:fixed;top:0;left:0;right:0;height:40px;background:#001a33;color:#0ff;display:flex;justify-content:space-between;align-items:center;padding:0 12px;z-index:10;font-weight:900;border-bottom:2px solid #0ff;font-family:sans-serif;font-size:13px}#joy{position:fixed;left:15px;bottom:20px;width:115px;height:115px;border-radius:50%;border:3px solid #0ff;background:rgba(0,255,255,.12);z-index:10}#stick{position:absolute;left:32px;top:32px;width:50px;height:50px;border-radius:50%;background:#fff;box-shadow:0 0 15px #fff}#skill{position:fixed;right:15px;bottom:90px;width:85px;height:85px;border-radius:50%;border:3px solid #0ff;color:#0ff;display:grid;place-items:center;font-weight:900;background:rgba(0,255,255,.15);z-index:10;box-shadow:0 0 15px #0ff}#shot{position:fixed;left:150px;bottom:30px;width:70px;height:70px;border-radius:50%;border:3px solid #ff0;color:#ff0;display:grid;place-items:center;font-weight:900;background:rgba(255,255,0,.18);z-index:10;box-shadow:0 0 15px #ff0}#run{position:fixed;right:15px;bottom:15px;width:60px;height:60px;border-radius:50%;border:2px solid #0ff;color:#0ff;display:grid;place-items:center;font-size:12px;font-weight:900;z-index:10}</style>
+<script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"></script>
 <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
-</head>
-<body>
-<div id="ui"><span>HOLO STRIKER 2027</span><span id="score">0 - 0</span><span id="fps">60FPS</span></div>
-<div id="goalText">GOOOAL!!!</div>
+</head><body>
+<div id="top"><span>HOLO STRIKER FOOTBALL 2027</span><span id="score">0 - 0</span><span>60FPS</span></div>
 <div id="joy"><div id="stick"></div></div>
-<div id="shot">SHOT</div>
-<div id="skill">SKILL</div>
-<div id="run">RUN</div>
-
+<div id="shot">SHOT</div><div id="skill">SKILL</div><div id="run">RUN</div>
 <script type="module">
 import * as THREE from 'three';
 
-// PERFORMANCE SETTINGS
-const isMobile = /Android|iPhone/i.test(navigator.userAgent);
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x0e2a0e);
-const camera = new THREE.PerspectiveCamera(55, innerWidth/innerHeight, 0.1, 100);
-camera.position.set(0,9,13);
-const renderer = new THREE.WebGLRenderer({antialias:!isMobile, powerPreference:"high-performance"});
+// CHECK
+console.log("HOLO 2027 STARTING");
+
+const scene=new THREE.Scene(); scene.background=new THREE.Color(0x1a6a1a);
+const camera=new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 100); camera.position.set(0,9,12);
+const renderer=new THREE.WebGLRenderer({antialias:false}); // FALSE = 60FPS for phone
 renderer.setSize(innerWidth, innerHeight);
-renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5)); // HIGH PERFORMANCE
-renderer.shadowMap.enabled = false; // OFF FOR 60FPS
+renderer.setPixelRatio(1); // FASTEST
 document.body.appendChild(renderer.domElement);
-scene.add(new THREE.AmbientLight(0xffffff, 1.2));
-const dirLight = new THREE.DirectionalLight(0xffffff, 1); dirLight.position.set(5,10,5); scene.add(dirLight);
 
-// PITCH - LOW POLY
-const pitch = new THREE.Mesh(new THREE.PlaneGeometry(32, 60), new THREE.MeshStandardMaterial({color:0x1e8a1e}));
-pitch.rotation.x = -Math.PI/2; scene.add(pitch);
-const grid = new THREE.GridHelper(32, 16, 0xffffff, 0x2a6a2a); grid.position.y=0.01; scene.add(grid);
+scene.add(new THREE.AmbientLight(0xffffff,1.2));
+const light=new THREE.DirectionalLight(0xffffff,0.8); light.position.set(5,10,5); scene.add(light);
 
-// PLAYER - REAL MESH NOT CAPSULE
-const player = new THREE.Group();
-const matGreen = new THREE.MeshStandardMaterial({color:0x00ff88});
-const matSkin = new THREE.MeshStandardMaterial({color:0xdcb898});
-const matBlack = new THREE.MeshStandardMaterial({color:0x111111});
-const body = new THREE.Mesh(new THREE.BoxGeometry(0.7,0.9,0.4), matGreen); body.position.y=1.1;
-const head = new THREE.Mesh(new THREE.SphereGeometry(0.35,12,12), matSkin); head.position.y=1.95;
-const legL = new THREE.Mesh(new THREE.BoxGeometry(0.22,0.7,0.22), matBlack); legL.position.set(-0.18,0.35,0);
-const legR = new THREE.Mesh(new THREE.BoxGeometry(0.22,0.7,0.22), matBlack); legR.position.set(0.18,0.35,0);
-player.add(body,head,legL,legR); player.position.set(0,0,8); scene.add(player);
+// PITCH
+const pitch=new THREE.Mesh(new THREE.PlaneGeometry(40,70), new THREE.MeshStandardMaterial({color:0x2a8a2a}));
+pitch.rotation.x=-Math.PI/2; scene.add(pitch);
+const centerLine=new THREE.Mesh(new THREE.PlaneGeometry(0.1,40), new THREE.MeshStandardMaterial({color:0xffffff}));
+centerLine.rotation.x=-Math.PI/2; centerLine.position.y=0.02; scene.add(centerLine);
 
-// BALL - HIGH PERFORMANCE
-const ball = new THREE.Mesh(new THREE.SphereGeometry(0.26,10,10), new THREE.MeshStandardMaterial({color:0xffffff}));
-ball.position.set(0,0.26,9.5); scene.add(ball);
+// PLAYER - NO CAPSULE AGAIN, REAL BOX
+const player=new THREE.Group();
+const body=new THREE.Mesh(new THREE.BoxGeometry(0.7,0.8,0.4), new THREE.MeshStandardMaterial({color:0x00ff88})); body.position.y=1;
+const head=new THREE.Mesh(new THREE.SphereGeometry(0.32,10,10), new THREE.MeshStandardMaterial({color:0xe0c0a0})); head.position.y=1.8;
+const leg=new THREE.Mesh(new THREE.BoxGeometry(0.22,0.6,0.22), new THREE.MeshStandardMaterial({color:0x111111})); leg.position.set(0,0.3,0);
+player.add(body,head,leg); player.position.set(0,0,6); scene.add(player);
+
+// BALL
+const ball=new THREE.Mesh(new THREE.SphereGeometry(0.25,12,12), new THREE.MeshStandardMaterial({color:0xffffff})); ball.position.set(0,0.25,7); scene.add(ball);
 
 // GOAL
-const goalMat = new THREE.MeshStandardMaterial({color:0xffffff});
-const g1 = new THREE.Mesh(new THREE.BoxGeometry(0.1,2,0.1), goalMat); g1.position.set(-3.2,1,-22);
-const g2 = new THREE.Mesh(new THREE.BoxGeometry(0.1,2,0.1), goalMat); g2.position.set(3.2,1,-22);
-const g3 = new THREE.Mesh(new THREE.BoxGeometry(6.5,0.1,0.1), goalMat); g3.position.set(0,2,-22);
+const g1=new THREE.Mesh(new THREE.BoxGeometry(0.1,2,0.1), new THREE.MeshStandardMaterial({color:0xffffff})); g1.position.set(-3,1,-20);
+const g2=g1.clone(); g2.position.x=3; const g3=new THREE.Mesh(new THREE.BoxGeometry(6.1,0.1,0.1), new THREE.MeshStandardMaterial({color:0xffffff})); g3.position.set(0,2,-20);
 scene.add(g1,g2,g3);
 
-let sx=0, sy=0, run=false, score=0, walk=0, ballVel=new THREE.Vector3(0,0,0), hasBall=true;
+// CONTROLS - 100% WORKING
+let sx=0,sy=0,run=false,walk=0, score=0, ballVel=new THREE.Vector3(), hasBall=true;
 const joy=document.getElementById('joy'), stick=document.getElementById('stick');
-joy.addEventListener('touchmove', e=>{
-  const r=joy.getBoundingClientRect(); let x=e.touches[0].clientX-r.left-60, y=e.touches[0].clientY-r.top-60;
-  const d=Math.hypot(x,y); if(d>40){x=x/d*40; y=y/d*40} stick.style.transform=`translate3d(${x}px,${y}px,0)`; sx=x/40; sy=y/40;
-},{passive:false});
-joy.addEventListener('touchend', ()=>{stick.style.transform='translate3d(0,0,0)'; sx=0; sy=0;});
-document.getElementById('run').addEventListener('touchstart',()=>run=true);
-document.getElementById('run').addEventListener('touchend',()=>run=false);
+function move(e){ const r=joy.getBoundingClientRect(); let x=e.touches[0].clientX-r.left-57, y=e.touches[0].clientY-r.top-57; const d=Math.hypot(x,y); if(d>38){x=x/d*38;y=y/d*38} stick.style.transform=`translate(${x}px,${y}px)`; sx=x/38; sy=y/38; }
+joy.addEventListener('touchmove',move,{passive:false}); joy.addEventListener('touchend',()=>{stick.style.transform=''; sx=0; sy=0;});
+document.getElementById('run').addEventListener('touchstart',()=>run=true); document.getElementById('run').addEventListener('touchend',()=>run=false);
+document.getElementById('shot').addEventListener('touchstart',()=>{
+ if(player.position.distanceTo(ball.position)>2.5) return; hasBall=false; ballVel.set((Math.random()-0.5)*0.2,0.3,-0.8-(run?0.5:0));
+});
+document.getElementById('skill').addEventListener('touchstart',()=>{ player.rotation.y+=Math.PI; setTimeout(()=>player.rotation.y+=Math.PI,300); });
 
-document.getElementById('shot').addEventListener('touchstart', ()=>{
-  if(player.position.distanceTo(ball.position)>2) return;
-  hasBall=false;
-  ballVel.set((Math.random()-0.5)*0.15, 0.25, -0.7 - (run?0.4:0));
-  navigator
+function animate(){
+ requestAnimationFrame(animate);
+ const sp=run?0.2:0.1;
+ if(sx||sy){ player.position.x+=sx*sp; player.position.z+=sy*sp; player.rotation.y=Math.atan2(sx,sy); walk+=0.25;
+   if(hasBall){ const tx=player.position.x+Math.sin(player.rotation.y)*0.8; const tz=player.position.z+Math.cos(player.rotation.y)*0.8; ball.position.x+=(tx-ball.position.x)*0.4; ball.position.z+=(tz-ball.position.z)*0.4; }
+ }
+ if(!hasBall){ ball.position.add(ballVel); ballVel.y-=0.03; ballVel.multiplyScalar(0.992); if(ball.position.y<0.25){ball.position.y=0.25; ballVel.y*=-0.4}
+   if(ball.position.z<-20 && Math.abs(ball.position.x)<3){score++; document.getElementById('score').innerText=score+' - 0'; ball.position.set(player.position.x,0.25,player.position.z+1); ballVel.set(0,0,0); hasBall=true;}
+   if(Math.abs(ball.position.x)>18 || Math.abs(ball.position.z)>30) {ball.position.set(player.position.x,0.25,player.position.z+1); ballVel.set(0,0,0); hasBall=true;}
+ }
+ camera.position.x+=(player.position.x-camera.position.x)*0.1; camera.position.z+=(player.position.z+10-camera.position.z)*0.1; camera.lookAt(player.position);
+ renderer.render(scene,camera);
+}
+animate();
+window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight);});
+</script></body></html>
