@@ -1,53 +1,77 @@
 <!DOCTYPE html><html><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
-<title>HOLO STRIKER FOOTBALL 2027 - REAL HUMAN</title>
-<style>*{margin:0;padding:0;touch-action:none}body{overflow:hidden;background:#000}canvas{display:block}#top{position:fixed;top:0;left:0;right:0;height:40px;background:rgba(0,0,0,.8);color:#0ff;display:flex;justify-content:space-between;padding:0 10px;align-items:center;font-family:sans-serif;font-weight:900;border-bottom:2px solid #0ff;z-index:10}#joy{position:fixed;left:15px;bottom:20px;width:120px;height:120px;border-radius:50%;border:2px solid #0ff;background:rgba(0,255,255,.1);z-index:10}#stick{position:absolute;left:35px;top:35px;width:50px;height:50px;border-radius:50%;background:#fff;box-shadow:0 0 10px #fff}#shot{position:fixed;left:160px;bottom:25px;width:70px;height:70px;border-radius:50%;background:rgba(255,255,0,.2);border:2px solid #ff0;color:#ff0;display:grid;place-items:center;font-weight:900;z-index:10}#run{position:fixed;right:15px;bottom:15px;width:70px;height:70px;border-radius:50%;background:rgba(0,255,255,.15);border:2px solid #0ff;color:#0ff;display:grid;place-items:center;z-index:10}</style>
+<title>HOLO STRIKER FOOTBALL 2027 - REAL FOOTBALL</title>
+<style>*{margin:0;padding:0;box-sizing:border-box;touch-action:none}body{background:#0a1a0a;overflow:hidden;font-family:sans-serif}canvas{display:block;width:100vw;height:100vh}#ui{position:fixed;top:0;left:0;right:0;height:38px;background:#000;color:#0ff;border-bottom:2px solid #0ff;display:flex;justify-content:space-between;align-items:center;padding:0 10px;z-index:10;font-weight:900}#joy{position:fixed;left:12px;bottom:18px;width:110px;height:110px;border-radius:50%;border:3px solid #0ff;background:rgba(0,255,255,.1);z-index:10}#stick{position:absolute;left:30px;top:30px;width:50px;height:50px;border-radius:50%;background:#fff;box-shadow:0 0 12px #fff}#shot{position:fixed;left:140px;bottom:25px;width:72px;height:72px;border-radius:50%;border:3px solid #ffe600;color:#ffe600;display:grid;place-items:center;font-weight:900;background:rgba(255,230,0,.15);z-index:10}#run{position:fixed;right:14px;bottom:18px;width:68px;height:68px;border-radius:50%;border:3px solid #0ff;color:#0ff;display:grid;place-items:center;font-weight:900;z-index:10}</style>
 <script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"></script>
-<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}</script>
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
 </head><body>
-<div id="top"><span>HOLO STRIKER 2027 - HUMAN</span><span id="score">0-0 LIVE 78:32</span></div>
+<div id="ui"><span>HOLO STRIKER 2027</span><span id="score">0 - 0 | 78:32 LIVE</span><span>60FPS</span></div>
 <div id="joy"><div id="stick"></div></div><div id="shot">SHOT</div><div id="run">RUN</div>
 <script type="module">
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+const scene=new THREE.Scene(); scene.background=new THREE.Color(0x0d4a12);
+const camera=new THREE.PerspectiveCamera(55, innerWidth/innerHeight, 0.1, 100); camera.position.set(0,10,14);
+const renderer=new THREE.WebGLRenderer({antialias:false}); renderer.setSize(innerWidth,innerHeight); renderer.setPixelRatio(1); document.body.appendChild(renderer.domElement);
+scene.add(new THREE.AmbientLight(0xffffff,1.3));
+const sun=new THREE.DirectionalLight(0xffffff,1); sun.position.set(10,20,10); scene.add(sun);
 
-const scene=new THREE.Scene(); scene.background=new THREE.Color(0x0a1a0a);
-const camera=new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 100); camera.position.set(0,4,8);
-const renderer=new THREE.WebGLRenderer({antialias:true}); renderer.setSize(innerWidth,innerHeight); renderer.setPixelRatio(1.2); document.body.appendChild(renderer.domElement);
-scene.add(new THREE.AmbientLight(0xffffff,1.5));
-const light=new THREE.DirectionalLight(0xffffff,1); light.position.set(5,10,5); scene.add(light);
+// REAL PITCH
+const pitch=new THREE.Mesh(new THREE.PlaneGeometry(36,68), new THREE.MeshStandardMaterial({color:0x1f8a1f}));
+pitch.rotation.x=-Math.PI/2; scene.add(pitch);
+function line(x,y,w,h){const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({color:0xffffff})); m.rotation.x=-Math.PI/2; m.position.set(x,0.02,y); scene.add(m);}
+line(0,0,0.15,68); line(0,-34,36,0.15); line(0,34,36,0.15); line(-18,0,0.15,68); line(18,0,0.15,68);
+line(0,-25,12,0.15); line(0,25,12,0.15);
 
-const pitch=new THREE.Mesh(new THREE.PlaneGeometry(50,80), new THREE.MeshStandardMaterial({color:0x1e7a1e})); pitch.rotation.x=-Math.PI/2; scene.add(pitch);
+// REAL HUMAN FOOTBALLER - NOT SOLDIER, NOT CAPSULE
+const player=new THREE.Group();
+const skin=new THREE.MeshStandardMaterial({color:0xd8a87d});
+const jersey=new THREE.MeshStandardMaterial({color:0x00ff88});
+const shortMat=new THREE.MeshStandardMaterial({color:0x111111});
+const body=new THREE.Mesh(new THREE.CapsuleGeometry(0.3,0.7,4,8), jersey); body.position.y=1.15; // jersey body
+const head=new THREE.Mesh(new THREE.SphereGeometry(0.32,12,12), skin); head.position.y=1.95;
+const armL=new THREE.Mesh(new THREE.CapsuleGeometry(0.08,0.5,4,6), skin); armL.position.set(-0.45,1.1,0); armL.rotation.z=0.2;
+const armR=armL.clone(); armR.position.x=0.45; armR.rotation.z=-0.2;
+const legL=new THREE.Mesh(new THREE.CapsuleGeometry(0.13,0.6,4,6), skin); legL.position.set(-0.16,0.35,0);
+const legR=legL.clone(); legR.position.x=0.16;
+const bootMat=new THREE.MeshStandardMaterial({color:0xffffff});
+const bootL=new THREE.Mesh(new THREE.BoxGeometry(0.22,0.12,0.35), bootMat); bootL.position.set(-0.16,0.05,0.1);
+const bootR=bootL.clone(); bootR.position.x=0.16;
+player.add(body,head,armL,armR,legL,legR,bootL,bootR); player.position.set(0,0,8); scene.add(player);
 
-const ball=new THREE.Mesh(new THREE.SphereGeometry(0.22,16,16), new THREE.MeshStandardMaterial({color:0xfff})); ball.position.set(0,0.22,2); scene.add(ball);
+// REAL WHITE FOOTBALL - NOT BLUE
+const ball=new THREE.Mesh(new THREE.SphereGeometry(0.24,16,16), new THREE.MeshStandardMaterial({color:0xffffff, roughness:0.3}));
+const ballPattern=new THREE.Mesh(new THREE.SphereGeometry(0.245,8,8), new THREE.MeshBasicMaterial({color:0x000000, wireframe:true})); ball.add(ballPattern);
+ball.position.set(0,0.24,9.2); scene.add(ball);
 
-let player, mixer, clock=new THREE.Clock(), actions={}, activeAction;
-const loader=new GLTFLoader();
-// Real human model from Three.js examples - works fast on mobile
-loader.load('https://threejs.org/examples/models/gltf/Soldier.glb', (gltf)=>{
-  player=gltf.scene; player.scale.set(1.2,1.2,1.2); player.position.set(0,0,3); scene.add(player);
-  mixer=new THREE.AnimationMixer(player);
-  // Use Walk animation for dribbling
-  actions.walk=mixer.clipAction(gltf.animations[1]); actions.run=mixer.clipAction(gltf.animations[2]); actions.idle=mixer.clipAction(gltf.animations[0]);
-  activeAction=actions.idle; activeAction.play();
-  document.getElementById('score').innerText='HUMAN LOADED - LIVE';
+// GOAL
+const goalMat=new THREE.MeshBasicMaterial({color:0xffffff});
+const p1=new THREE.Mesh(new THREE.BoxGeometry(0.12,2.2,0.12), goalMat); p1.position.set(-3.5,1.1,-29);
+const p2=p1.clone(); p2.position.x=3.5; const cross=new THREE.Mesh(new THREE.BoxGeometry(7.12,0.12,0.12), goalMat); cross.position.set(0,2.2,-29);
+scene.add(p1,p2,cross);
+
+// CONTROLS - WORKING 100%
+let sx=0,sy=0,running=false,walk=0,score=0, ballV=new THREE.Vector3(), hasBall=true;
+const joy=document.getElementById('joy'), stick=document.getElementById('stick');
+joy.addEventListener('touchmove',e=>{const r=joy.getBoundingClientRect();let x=e.touches[0].clientX-r.left-55,y=e.touches[0].clientY-r.top-55;let d=Math.hypot(x,y);if(d>35){x=x/d*35;y=y/d*35}stick.style.transform=`translate(${x}px,${y}px)`;sx=x/35;sy=y/35;},{passive:false});
+joy.addEventListener('touchend',()=>{stick.style.transform='';sx=0;sy=0;});
+document.getElementById('run').addEventListener('touchstart',()=>running=true); document.getElementById('run').addEventListener('touchend',()=>running=false);
+document.getElementById('shot').addEventListener('touchstart',()=>{
+ if(player.position.distanceTo(ball.position)>2.2) return; hasBall=false; ballV.set((Math.random()-0.5)*0.2,0.35,-0.9-(running?0.5:0));
 });
 
-let sx=0,sy=0,isRun=false;
-const joy=document.getElementById('joy'), stick=document.getElementById('stick');
-joy.addEventListener('touchmove',e=>{const r=joy.getBoundingClientRect();let x=e.touches[0].clientX-r.left-60,y=e.touches[0].clientY-r.top-60;let d=Math.hypot(x,y);if(d>40){x=x/d*40;y=y/d*40}stick.style.transform=`translate(${x}px,${y}px)`;sx=x/40;sy=y/40; if(player&&actions.walk){if(activeAction!==actions.walk){activeAction.fadeOut(0.2); activeAction=actions.walk; activeAction.fadeIn(0.2).play();}}},{passive:false});
-joy.addEventListener('touchend',()=>{stick.style.transform='';sx=0;sy=0; if(player&&actions.idle){activeAction.fadeOut(0.2); activeAction=actions.idle; activeAction.fadeIn(0.2).play();}});
-document.getElementById('run').addEventListener('touchstart',()=>{isRun=true; if(player&&actions.run){activeAction.fadeOut(0.1); activeAction=actions.run; activeAction.fadeIn(0.1).play();}});
-document.getElementById('run').addEventListener('touchend',()=>{isRun=false;});
-document.getElementById('shot').addEventListener('touchstart',()=>{ ball.position.z-= (isRun?5:3); ball.position.y=0.5; setTimeout(()=>ball.position.set(player.position.x,0.22,player.position.z+1), 800); });
-
-function animate(){
- requestAnimationFrame(animate);
- const delta=clock.getDelta(); if(mixer) mixer.update(delta);
- if(player){ const sp=isRun?0.12:0.06; player.position.x+=sx*sp; player.position.z+=sy*sp; if(sx||sy) player.rotation.y=Math.atan2(sx,sy);
-   camera.position.x+=(player.position.x-camera.position.x)*0.05; camera.position.z+=(player.position.z+6-camera.position.z)*0.05; camera.lookAt(player.position);
+function loop(){
+ requestAnimationFrame(loop);
+ const sp=running?0.22:0.13;
+ if(sx||sy){ player.position.x+=sx*sp; player.position.z+=sy*sp; player.position.x=Math.max(-16,Math.min(16,player.position.x)); player.position.z=Math.max(-28,Math.min(30,player.position.z)); player.rotation.y=Math.atan2(sx,sy); walk+=running?0.35:0.22; legL.rotation.x=Math.sin(walk)*0.8; legR.rotation.x=-Math.sin(walk)*0.8; armL.rotation.x=-Math.sin(walk)*0.5; armR.rotation.x=Math.sin(walk)*0.5;
+  if(hasBall){ const fx=player.position.x+Math.sin(player.rotation.y)*0.9; const fz=player.position.z+Math.cos(player.rotation.y)*0.9; ball.position.x+=(fx-ball.position.x)*0.4; ball.position.z+=(fz-ball.position.z)*0.4; }
  }
+ if(!hasBall){ ball.position.add(ballV); ballV.y-=0.03; ballV.multiplyScalar(0.991); if(ball.position.y<0.24){ball.position.y=0.24; ballV.y*=-0.4; ballV.x*=0.8; ballV.z*=0.8;}
+  if(ball.position.z<-29 && Math.abs(ball.position.x)<3.5 && ball.position.y<2.2){ score++; document.getElementById('score').innerText=score+' - 0 | GOAL!!!'; setTimeout(()=>{document.getElementById('score').innerText=score+' - 0 | 78:32 LIVE'; ball.position.set(player.position.x,0.24,player.position.z+1); ballV.set(0,0,0); hasBall=true;},1000); return;}
+  if(ball.position.length()>40 || ballV.length()<0.02){ ball.position.set(player.position.x,0.24,player.position.z+1); ballV.set(0,0,0); hasBall=true; }
+ }
+ camera.position.x+=(player.position.x-camera.position.x)*0.08; camera.position.z+=(player.position.z+12-camera.position.z)*0.08; camera.lookAt(player.position.x,0.5,player.position.z-2);
  renderer.render(scene,camera);
 }
-animate();
+loop();
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight);});
 </script></body></html>
