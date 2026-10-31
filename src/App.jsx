@@ -1,505 +1,573 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  Trophy,
-  Users,
-  Globe,
-  Shield,
-  Settings,
-  User,
-  Play,
-  Star,
-  Menu,
-  X,
-  Crown,
-  Target
+  Home, Play, Trophy, Shield, Users, User,
+  Globe, Target, Settings, Store, Crown,
+  Menu, X, Bell, Search, ChevronRight,
+  Star, Radio, CalendarDays, Zap, Medal,
+  Swords, Shirt, ChartNoAxesCombined
 } from "lucide-react";
 
 import "./style.css";
 
 const players = [
-  {
-    name: "Lionel Messi",
-    country: "Argentina",
-    position: "Forward",
-    image: "https://commons.wikimedia.org/wiki/Special:FilePath/Lionel_Messi_20180626.jpg"
-  },
-  {
-    name: "Cristiano Ronaldo",
-    country: "Portugal",
-    position: "Forward",
-    image: "https://commons.wikimedia.org/wiki/Special:FilePath/Cristiano_Ronaldo_2018.jpg"
-  },
-  {
-    name: "Kylian Mbappé",
-    country: "France",
-    position: "Forward",
-    image: "https://commons.wikimedia.org/wiki/Special:FilePath/Kylian_Mbapp%C3%A9_2019.jpg"
-  },
-  {
-    name: "Erling Haaland",
-    country: "Norway",
-    position: "Striker",
-    image: "https://commons.wikimedia.org/wiki/Special:FilePath/Erling_Haaland_2023.jpg"
-  },
-  {
-    name: "Mohamed Salah",
-    country: "Egypt",
-    position: "Forward",
-    image: "https://commons.wikimedia.org/wiki/Special:FilePath/Mohamed_Salah_2018.jpg"
-  },
-  {
-    name: "Vinícius Júnior",
-    country: "Brazil",
-    position: "Forward",
-    image: "https://commons.wikimedia.org/wiki/Special:FilePath/Vinicius_Junior_2022.jpg"
-  }
+  {name:"Lionel Messi",country:"Argentina",position:"Forward",rating:93,wiki:"Lionel Messi"},
+  {name:"Cristiano Ronaldo",country:"Portugal",position:"Forward",rating:90,wiki:"Cristiano Ronaldo"},
+  {name:"Kylian Mbappé",country:"France",position:"Forward",rating:92,wiki:"Kylian Mbappé"},
+  {name:"Erling Haaland",country:"Norway",position:"Striker",rating:91,wiki:"Erling Haaland"},
+  {name:"Mohamed Salah",country:"Egypt",position:"Forward",rating:89,wiki:"Mohamed Salah"},
+  {name:"Vinícius Júnior",country:"Brazil",position:"Forward",rating:91,wiki:"Vinícius Júnior"}
 ];
 
-export default function App() {
-  const [page, setPage] = useState(
-    localStorage.getItem("holo_player") ? "dashboard" : "home"
-  );
+const menuItems = [
+  {id:"home",name:"Home",icon:Home},
+  {id:"play",name:"Play Football",icon:Play},
+  {id:"competitions",name:"Competitions",icon:Trophy},
+  {id:"players",name:"Players",icon:Users},
+  {id:"clubs",name:"Clubs",icon:Shield},
+  {id:"national",name:"National Teams",icon:Globe},
+  {id:"coach",name:"Coach Mode",icon:Target},
+  {id:"career",name:"Player Career",icon:User},
+  {id:"live",name:"Live Matches",icon:Radio},
+  {id:"honors",name:"Honors Room",icon:Medal},
+  {id:"store",name:"Football Store",icon:Store}
+];
 
-  const [player, setPlayer] = useState(
-    JSON.parse(localStorage.getItem("holo_player") || "null")
-  );
+export default function App(){
 
-  const [mobileMenu, setMobileMenu] = useState(false);
+  const [page,setPage] = useState("home");
+  const [sidebarOpen,setSidebarOpen] = useState(false);
+  const [search,setSearch] = useState("");
+  const [account,setAccount] = useState(null);
+  const [registerOpen,setRegisterOpen] = useState(false);
 
-  const [form, setForm] = useState({
-    username: "",
-    email: "",
-    password: "",
-    country: "Nigeria"
+  const [form,setForm] = useState({
+    username:"",
+    email:"",
+    password:"",
+    country:"Nigeria"
   });
 
-  function register(event) {
-    event.preventDefault();
+  useEffect(()=>{
+    const saved=localStorage.getItem("holo_player");
+    if(saved){
+      try{
+        setAccount(JSON.parse(saved));
+      }catch{
+        localStorage.removeItem("holo_player");
+      }
+    }
+  },[]);
 
-    if (!form.username || !form.email || !form.password) {
-      alert("Please complete all registration fields.");
+  function navigate(destination){
+    setPage(destination);
+    setSidebarOpen(false);
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+  function register(e){
+    e.preventDefault();
+
+    if(!form.username || !form.email || !form.password){
+      alert("Please complete all fields.");
       return;
     }
 
-    const profile = {
-      username: form.username,
-      email: form.email,
-      country: form.country,
-      registered: true
+    const newAccount={
+      username:form.username,
+      email:form.email,
+      country:form.country,
+      registered:true
     };
 
-    localStorage.setItem("holo_player", JSON.stringify(profile));
+    // Prototype only. Secure database registration comes later.
+    localStorage.setItem("holo_player",JSON.stringify(newAccount));
 
-    setPlayer(profile);
-    setPage("dashboard");
-
-    // The password is deliberately not stored in the browser.
+    setAccount(newAccount);
+    setRegisterOpen(false);
+    navigate("home");
   }
 
-  function logout() {
+  function signOut(){
     localStorage.removeItem("holo_player");
-    setPlayer(null);
-    setPage("home");
+    setAccount(null);
+    navigate("home");
   }
 
-  function go(destination) {
-    setPage(destination);
-    setMobileMenu(false);
-    window.scrollTo(0, 0);
-  }
+  return(
+    <div className="holo-app">
 
-  const navigation = [
-    ["home", "Home"],
-    ["players", "Superstars"],
-    ["coach", "Coach Mode"],
-    ["league", "Premier League"]
-  ];
+      {/* TOP HEADER */}
 
-  return (
-    <div className="app">
-
-      <header className="topbar">
-
-        <div className="brand" onClick={() => go("home")}>
-          HOLO <span>STRIKER</span>
-          <small>FOOTBALL 2027</small>
-        </div>
+      <header className="top-header">
 
         <button
-          className="mobile-toggle"
-          onClick={() => setMobileMenu(!mobileMenu)}
+          className="mobile-menu-button"
+          onClick={()=>setSidebarOpen(!sidebarOpen)}
         >
-          {mobileMenu ? <X /> : <Menu />}
+          {sidebarOpen?<X/>:<Menu/>}
         </button>
 
-        <nav className={mobileMenu ? "navigation show" : "navigation"}>
-          {navigation.map(([destination, label]) => (
-            <button
-              key={destination}
-              onClick={() => go(destination)}
-            >
-              {label}
-            </button>
-          ))}
-        </nav>
+        <div className="holo-logo" onClick={()=>navigate("home")}>
+          <div className="logo-symbol">H</div>
+          <div>
+            <h2>HOLO<span>STRIKER</span></h2>
+            <small>FOOTBALL 2027</small>
+          </div>
+        </div>
 
-        {player ? (
-          <button className="account-button" onClick={() => go("dashboard")}>
-            <User size={17} />
-            {player.username}
+        <div className="header-search">
+          <Search size={17}/>
+          <input
+            placeholder="Search players, clubs, competitions..."
+            value={search}
+            onChange={e=>setSearch(e.target.value)}
+          />
+        </div>
+
+        <div className="header-right">
+
+          <button className="icon-button" aria-label="Notifications">
+            <Bell size={19}/>
+            <i></i>
           </button>
-        ) : (
-          <button className="register-button" onClick={() => go("register")}>
-            REGISTER
+
+          <div className="header-coins">
+            <Zap size={16}/>
+            <span>1,000</span>
+          </div>
+
+          <button
+            className="profile-button"
+            onClick={()=>account?navigate("profile"):setRegisterOpen(true)}
+          >
+            <User size={17}/>
+            <span>{account?account.username:"GUEST"}</span>
           </button>
-        )}
+
+        </div>
 
       </header>
 
-      {page === "home" && (
-        <>
+      <div className="app-layout">
 
-          <section className="hero">
+        {/* SIDEBAR */}
 
-            <div className="hero-content">
-              <div className="eyebrow">
-                THE NEXT GENERATION OF FOOTBALL
-              </div>
+        <aside className={`sidebar ${sidebarOpen?"sidebar-open":""}`}>
 
-              <h1>
-                OWN THE GAME.
-                <span> MAKE HISTORY.</span>
-              </h1>
+          <div className="sidebar-label">MAIN MENU</div>
 
-              <p>
-                Build your football career, select your superstars,
-                manage your club and compete against football fans
-                around the world.
-              </p>
+          {menuItems.map(item=>{
+            const Icon=item.icon;
 
-              <div className="hero-actions">
-                <button
-                  className="primary-button"
-                  onClick={() => go(player ? "dashboard" : "register")}
-                >
-                  <Play size={19} fill="currentColor" />
-                  PLAY NOW
-                </button>
-
-                <button
-                  className="secondary-button"
-                  onClick={() => go("players")}
-                >
-                  EXPLORE PLAYERS
-                </button>
-              </div>
-
-              <div className="hero-stats">
-                <div><strong>2027</strong><small>EDITION</small></div>
-                <div><strong>GLOBAL</strong><small>FOOTBALL</small></div>
-                <div><strong>YOUR</strong><small>LEGACY</small></div>
-              </div>
-            </div>
-
-          </section>
-
-          <section className="section">
-            <div className="section-heading">
-              <div>
-                <small>WORLD FOOTBALL SUPERSTARS</small>
-                <h2>FEATURED PLAYERS</h2>
-              </div>
-
-              <button onClick={() => go("players")}>
-                VIEW ALL
+            return(
+              <button
+                key={item.id}
+                className={`sidebar-link ${page===item.id?"active":""}`}
+                onClick={()=>navigate(item.id)}
+              >
+                <Icon size={19}/>
+                <span>{item.name}</span>
+                {item.id==="live"&&<i className="live-dot"/>}
               </button>
-            </div>
+            );
+          })}
 
-            <div className="player-grid">
-              {players.map((item) => (
-                <div className="player-card" key={item.name}>
-                  <img src={item.image} alt={item.name} />
-                  <div className="player-details">
-                    <small>{item.country}</small>
-                    <h3>{item.name}</h3>
-                    <p>{item.position}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
+          <div className="sidebar-divider"></div>
 
-          <section className="section modes-section">
-            <div className="section-heading">
+          <div className="sidebar-label">PERSONAL</div>
+
+          <button className="sidebar-link" onClick={()=>navigate("profile")}>
+            <User size={19}/>
+            <span>My Profile</span>
+          </button>
+
+          <button className="sidebar-link" onClick={()=>navigate("settings")}>
+            <Settings size={19}/>
+            <span>Settings</span>
+          </button>
+
+          <div className="sidebar-bottom">
+
+            <div className="club-mini">
+              <div className="club-emblem">H</div>
               <div>
-                <small>ENTER YOUR FOOTBALL WORLD</small>
-                <h2>CHOOSE YOUR MODE</h2>
+                <strong>HOLO FC</strong>
+                <small>YOUR FOOTBALL CLUB</small>
               </div>
             </div>
 
-            <div className="mode-grid">
-
-              <Mode
-                icon={<Trophy />}
-                title="Career Mode"
-                description="Build your career and become a football legend."
-                onClick={() => go("dashboard")}
-              />
-
-              <Mode
-                icon={<Crown />}
-                title="Tournament"
-                description="Compete for championships and trophies."
-                onClick={() => go("dashboard")}
-              />
-
-              <Mode
-                icon={<Globe />}
-                title="Online Multiplayer"
-                description="Challenge football players around the world."
-                onClick={() => go("dashboard")}
-              />
-
-              <Mode
-                icon={<Users />}
-                title="Coach Mode"
-                description="Manage your squad, formations and tactics."
-                onClick={() => go("coach")}
-              />
-
+            <div className="online-status">
+              <span></span> SYSTEM ONLINE
             </div>
-          </section>
 
-          <section className="section">
-            <div className="section-heading">
-              <div>
-                <small>BUILD YOUR FOOTBALL IDENTITY</small>
-                <h2>EXPLORE HOLO STRIKER</h2>
+          </div>
+
+        </aside>
+
+        {/* MAIN CONTENT */}
+
+        <main className="main-content">
+
+          {page==="home"&&(
+            <HomePage
+              account={account}
+              navigate={navigate}
+              openRegister={()=>setRegisterOpen(true)}
+            />
+          )}
+
+          {page==="players"&&<PlayersPage/>}
+
+          {page==="coach"&&<CoachPage/>}
+
+          {page==="competitions"&&<CompetitionsPage/>}
+
+          {page==="clubs"&&<SimplePage title="CLUB UNIVERSE" subtitle="Discover clubs, build your squad and manage your football identity." icon={Shield}/>}
+
+          {page==="national"&&<SimplePage title="NATIONAL TEAMS" subtitle="Choose your country and represent your nation." icon={Globe}/>}
+
+          {page==="career"&&<SimplePage title="PLAYER CAREER" subtitle="Create your football story and rise to greatness." icon={User}/>}
+
+          {page==="live"&&<SimplePage title="LIVE FOOTBALL" subtitle="Watch and follow live HOLO STRIKER matches." icon={Radio}/>}
+
+          {page==="honors"&&<SimplePage title="HONORS ROOM" subtitle="Your trophies, medals, awards and football achievements." icon={Medal}/>}
+
+          {page==="store"&&<SimplePage title="FOOTBALL STORE" subtitle="Explore jerseys, rewards and football collections." icon={Store}/>}
+
+          {page==="play"&&<SimplePage title="GAME CENTER" subtitle="Choose your match type and enter the football arena." icon={Play}/>}
+
+          {page==="profile"&&(
+            <section className="content-page">
+              <div className="page-heading">
+                <small>FOOTBALL IDENTITY</small>
+                <h1>MY PROFILE</h1>
               </div>
-            </div>
+              <div className="profile-panel">
+                <div className="profile-avatar"><User size={40}/></div>
+                <h2>{account?.username||"GUEST PLAYER"}</h2>
+                <p>{account?.country||"No country selected"}</p>
+                <p>{account?.email||"Register to create your profile."}</p>
+                {!account&&<button className="gold-button" onClick={()=>setRegisterOpen(true)}>REGISTER NOW</button>}
+                {account&&<button className="outline-button" onClick={signOut}>SIGN OUT</button>}
+              </div>
+            </section>
+          )}
 
-            <div className="feature-grid">
-              <Feature icon={<User />} title="Player Selection" />
-              <Feature icon={<Shield />} title="Football Associations" />
-              <Feature icon={<Globe />} title="Country Selection" />
-              <Feature icon={<Trophy />} title="Club Management" />
-              <Feature icon={<Star />} title="Trophy Cabinet" />
-              <Feature icon={<Settings />} title="Game Settings" />
-            </div>
-          </section>
+          {page==="settings"&&<SimplePage title="GAME SETTINGS" subtitle="Manage your football experience and preferences." icon={Settings}/>}
 
-        </>
-      )}
+        </main>
 
-      {page === "register" && (
-        <section className="registration-page">
-          <div className="registration-box">
+      </div>
 
-            <small>JOIN THE FOOTBALL WORLD</small>
-            <h1>CREATE YOUR PLAYER ACCOUNT</h1>
+      {/* REGISTRATION MODAL */}
 
-            <p>Your football journey starts here.</p>
+      {registerOpen&&(
+        <div className="modal-overlay" onClick={()=>setRegisterOpen(false)}>
+          <div className="register-modal" onClick={e=>e.stopPropagation()}>
+
+            <button className="modal-close" onClick={()=>setRegisterOpen(false)}>
+              <X/>
+            </button>
+
+            <div className="modal-brand">HOLO<span>STRIKER</span></div>
+
+            <small>JOIN THE FOOTBALL UNIVERSE</small>
+
+            <h2>CREATE YOUR PLAYER ACCOUNT</h2>
 
             <form onSubmit={register}>
 
-              <label>Username</label>
+              <label>PLAYER USERNAME</label>
               <input
-                value={form.username}
-                onChange={e => setForm({...form, username:e.target.value})}
-                placeholder="Choose your username"
                 required
+                value={form.username}
+                onChange={e=>setForm({...form,username:e.target.value})}
+                placeholder="Choose a username"
               />
 
-              <label>Email address</label>
+              <label>EMAIL ADDRESS</label>
               <input
+                required
                 type="email"
                 value={form.email}
-                onChange={e => setForm({...form, email:e.target.value})}
-                placeholder="Enter your email"
-                required
+                onChange={e=>setForm({...form,email:e.target.value})}
+                placeholder="Your email address"
               />
 
-              <label>Password</label>
+              <label>PASSWORD</label>
               <input
-                type="password"
-                value={form.password}
-                onChange={e => setForm({...form, password:e.target.value})}
-                placeholder="Create a password"
                 required
+                type="password"
+                minLength="8"
+                value={form.password}
+                onChange={e=>setForm({...form,password:e.target.value})}
+                placeholder="Create a password"
               />
 
-              <label>Country</label>
+              <label>YOUR COUNTRY</label>
               <select
                 value={form.country}
-                onChange={e => setForm({...form, country:e.target.value})}
+                onChange={e=>setForm({...form,country:e.target.value})}
               >
-                {[
-                  "Nigeria","Ghana","England","Brazil",
-                  "Argentina","France","Portugal","Egypt",
-                  "Spain","Germany","United States"
-                ].map(country => (
-                  <option key={country}>{country}</option>
-                ))}
+                {["Nigeria","Ghana","England","Brazil","Argentina","France","Portugal","Egypt","Spain","Germany"].map(c=><option key={c}>{c}</option>)}
               </select>
 
-              <button className="primary-button full-button">
-                CREATE MY ACCOUNT
+              <button className="gold-button full-width">
+                CREATE ACCOUNT <ChevronRight size={18}/>
               </button>
 
             </form>
 
-            <p className="small-note">
-              Registration is currently a local prototype.
-              Secure server-side account registration will be connected next.
+            <p className="modal-note">
+              This registration is a local prototype. Secure account storage will be connected before public launch.
             </p>
 
           </div>
-        </section>
+        </div>
       )}
 
-      {page === "dashboard" && (
-        <section className="dashboard">
-
-          <div className="welcome-panel">
-            <small>PLAYER DASHBOARD</small>
-            <h1>WELCOME, {player?.username || "PLAYER"}</h1>
-            <p>Your football journey continues.</p>
-          </div>
-
-          <div className="dashboard-grid">
-
-            <Feature
-              icon={<Play />}
-              title="Play Football"
-              onClick={() => go("game")}
-            />
-
-            <Feature
-              icon={<Users />}
-              title="Player Selection"
-              onClick={() => go("players")}
-            />
-
-            <Feature
-              icon={<Trophy />}
-              title="Coach Mode"
-              onClick={() => go("coach")}
-            />
-
-            <Feature
-              icon={<Globe />}
-              title="Premier League"
-              onClick={() => go("league")}
-            />
-
-            <Feature
-              icon={<Shield />}
-              title="Association"
-              onClick={() => go("association")}
-            />
-
-            <Feature
-              icon={<Settings />}
-              title="Settings"
-              onClick={() => go("settings")}
-            />
-
-          </div>
-
-          <button className="secondary-button" onClick={logout}>
-            SIGN OUT
-          </button>
-
-        </section>
-      )}
-
-      {page === "players" && (
-        <section className="section">
-          <div className="section-heading">
-            <div>
-              <small>BUILD YOUR SQUAD</small>
-              <h2>PLAYER SELECTION</h2>
-            </div>
-          </div>
-
-          <div className="player-grid">
-            {players.map(item => (
-              <div className="player-card" key={item.name}>
-                <img src={item.image} alt={item.name} />
-                <div className="player-details">
-                  <small>{item.country}</small>
-                  <h3>{item.name}</h3>
-                  <p>{item.position}</p>
-                  <button onClick={() => alert(item.name + " selected for your squad.")}>
-                    SELECT PLAYER
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {page === "coach" && (
-        <section className="section">
-          <small>TEAM MANAGEMENT</small>
-          <h1>COACH MODE</h1>
-          <p>Manage your football team and build your winning strategy.</p>
-          <div className="feature-grid">
-            <Feature icon={<Users />} title="Manage Squad" />
-            <Feature icon={<Target />} title="Team Tactics" />
-            <Feature icon={<Shield />} title="Formations" />
-            <Feature icon={<Trophy />} title="Competitions" />
-          </div>
-        </section>
-      )}
-
-      {page === "league" && (
-        <section className="section">
-          <small>COMPETITIONS</small>
-          <h1>PREMIER LEAGUE</h1>
-          <p>League standings will appear here when the competition system is connected.</p>
-        </section>
-      )}
-
-      {page === "game" && (
-        <section className="section">
-          <h1>GAME CENTER</h1>
-          <p>The existing football gameplay engine will be connected here without deleting it.</p>
-        </section>
-      )}
-
-      {["association","settings"].includes(page) && (
-        <section className="section">
-          <h1>{page === "association" ? "FOOTBALL ASSOCIATION" : "SETTINGS"}</h1>
-          <p>This section will be developed and connected in the next stage.</p>
-        </section>
-      )}
-
-      <footer>
+      <footer className="holo-footer">
         <strong>HOLO STRIKER FOOTBALL 2027</strong>
-        <p>The Future of Football Gaming.</p>
+        <span>THE FUTURE OF FOOTBALL GAMING</span>
       </footer>
 
     </div>
   );
 }
 
-function Mode({icon,title,description,onClick}) {
-  return (
-    <button className="mode-card" onClick={onClick}>
-      {icon}
-      <h3>{title}</h3>
-      <p>{description}</p>
-    </button>
+
+/* HOMEPAGE */
+
+function HomePage({account,navigate,openRegister}){
+
+  return(
+    <>
+
+      <div className="welcome-strip">
+        <div>
+          <span className="green-indicator"></span>
+          FOOTBALL UNIVERSE <b>2027</b>
+        </div>
+        <div>WELCOME {account?.username?.toUpperCase()||"GUEST PLAYER"}</div>
+      </div>
+
+      {/* FEATURED COMPETITION */}
+
+      <section className="hero-banner">
+
+        <div className="hero-overlay"></div>
+
+        <div className="hero-content">
+
+          <div className="competition-tag">
+            <Trophy size={15}/> THE INTERNATIONAL CHAMPIONSHIP
+          </div>
+
+          <h1>
+            THE ROAD<br/>
+            TO <span>GLORY.</span>
+          </h1>
+
+          <p>
+            Every nation. Every club. Every dream.
+            Write your name into football history.
+          </p>
+
+          <div className="hero-buttons">
+            <button className="gold-button" onClick={()=>navigate("competitions")}>
+              EXPLORE COMPETITIONS <ChevronRight size={18}/>
+            </button>
+
+            <button className="outline-button" onClick={account?()=>navigate("play"):openRegister}>
+              {account?"ENTER GAME":"CREATE ACCOUNT"}
+            </button>
+          </div>
+
+          <div className="hero-bottom">
+            <span><span className="green-indicator"></span> SEASON 2027</span>
+            <span>GLOBAL FOOTBALL EXPERIENCE</span>
+          </div>
+
+        </div>
+
+        <div className="hero-trophy">
+          <div className="trophy-glow"></div>
+          <Trophy size={145} strokeWidth={1.1}/>
+          <div className="trophy-caption">CHAMPIONSHIP</div>
+        </div>
+
+      </section>
+
+      {/* QUICK ACCESS */}
+
+      <section className="quick-access">
+
+        <QuickCard icon={<Play/>} title="QUICK MATCH" description="Jump into football" onClick={()=>navigate("play")}/>
+        <QuickCard icon={<Users/>} title="MY SQUAD" description="Build your team" onClick={()=>navigate("players")}/>
+        <QuickCard icon={<Target/>} title="COACH MODE" description="Manage your club" onClick={()=>navigate("coach")}/>
+        <QuickCard icon={<Radio/>} title="LIVE MATCHES" description="Watch football" onClick={()=>navigate("live")}/>
+
+      </section>
+
+      {/* MOMENTS */}
+
+      <section className="home-section">
+
+        <SectionTitle label="THE WORLD OF FOOTBALL" title="FOOTBALL MOMENTS" action="VIEW ALL" onAction={()=>navigate("players")}/>
+
+        <div className="moments-grid">
+
+          <div className="moment-card moment-large">
+            <div className="moment-image moment-one"></div>
+            <div className="moment-info">
+              <span>SUPERSTAR SPOTLIGHT</span>
+              <h3>THE GREATEST<br/>OF THE GAME</h3>
+              <button onClick={()=>navigate("players")}>EXPLORE PLAYERS <ChevronRight size={16}/></button>
+            </div>
+          </div>
+
+          <div className="moment-card">
+            <div className="moment-image moment-two"></div>
+            <div className="moment-info">
+              <span>CLUB FOOTBALL</span>
+              <h3>BUILD YOUR<br/>LEGACY</h3>
+              <button onClick={()=>navigate("clubs")}>EXPLORE CLUBS <ChevronRight size={16}/></button>
+            </div>
+          </div>
+
+          <div className="moment-card">
+            <div className="moment-image moment-three"></div>
+            <div className="moment-info">
+              <span>INTERNATIONAL</span>
+              <h3>REPRESENT<br/>YOUR NATION</h3>
+              <button onClick={()=>navigate("national")}>EXPLORE NATIONS <ChevronRight size={16}/></button>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      {/* SUPERSTARS */}
+
+      <section className="home-section">
+
+        <SectionTitle label="WORLD CLASS TALENT" title="FOOTBALL SUPERSTARS" action="ALL PLAYERS" onAction={()=>navigate("players")}/>
+
+        <PlayerCards limit={4}/>
+
+      </section>
+
+      {/* CAREER MODES */}
+
+      <section className="home-section">
+
+        <SectionTitle label="CREATE YOUR STORY" title="YOUR FOOTBALL JOURNEY"/>
+
+        <div className="career-grid">
+
+          <CareerCard number="01" title="PLAYER CAREER" description="Rise from a young talent to a global football legend." icon={<User/>} onClick={()=>navigate("career")}/>
+
+          <CareerCard number="02" title="TEAM CAREER" description="Build a club, recruit players and dominate competitions." icon={<Shield/>} onClick={()=>navigate("clubs")}/>
+
+          <CareerCard number="03" title="COACH CAREER" description="Choose tactics, manage your squad and win trophies." icon={<Target/>} onClick={()=>navigate("coach")}/>
+
+        </div>
+
+      </section>
+
+      {/* COMPETITIONS */}
+
+      <section className="home-section">
+
+        <SectionTitle label="FIGHT FOR GREATNESS" title="FEATURED COMPETITIONS" action="VIEW COMPETITIONS" onAction={()=>navigate("competitions")}/>
+
+        <div className="competition-grid">
+
+          <CompetitionCard icon={<Trophy/>} title="INTERNATIONAL CUP" subtitle="NATIONAL TEAM CHAMPIONSHIP" color="gold" onClick={()=>navigate("competitions")}/>
+
+          <CompetitionCard icon={<Medal/>} title="CHAMPIONS LEAGUE" subtitle="THE ULTIMATE CLUB BATTLE" color="blue" onClick={()=>navigate("competitions")}/>
+
+          <CompetitionCard icon={<Crown/>} title="PREMIER LEAGUE" subtitle="THE RACE FOR THE TITLE" color="green" onClick={()=>navigate("competitions")}/>
+
+        </div>
+
+      </section>
+
+      {/* FINAL CALL */}
+
+      <section className="final-banner">
+        <div>
+          <small>YOUR LEGEND STARTS HERE</small>
+          <h2>READY TO MAKE HISTORY?</h2>
+          <p>Enter the football universe and create your legacy.</p>
+        </div>
+        <button className="gold-button" onClick={account?()=>navigate("play"):openRegister}>
+          {account?"PLAY NOW":"JOIN HOLO STRIKER"} <ChevronRight/>
+        </button>
+      </section>
+
+    </>
   );
 }
 
-function Feature({icon,title,onClick}) {
-  return (
-    <button className="feature-card" onClick={onClick || (() => alert(title + " section will be connected next."))}>
-      {icon}
-      <strong>{title}</strong>
-    </button>
+
+/* PLAYER PAGE */
+
+function PlayersPage(){
+
+  return(
+    <section className="content-page">
+
+      <div className="page-heading">
+        <small>WORLD CLASS FOOTBALL TALENT</small>
+        <h1>PLAYER UNIVERSE</h1>
+        <p>Discover football superstars and build your dream squad.</p>
+      </div>
+
+      <PlayerCards/>
+
+    </section>
   );
-  }
+}
+
+function PlayerCards({limit}){
+
+  const list=limit?players.slice(0,limit):players;
+
+  return(
+    <div className="superstar-grid">
+
+      {list.map((p,i)=>(
+        <PlayerCard key={p.name} player={p} index={i}/>
+      ))}
+
+    </div>
+  );
+}
+
+function PlayerCard({player,index}){
+
+  const [image,setImage]=useState("");
+
+  useEffect(()=>{
+
+    let active=true;
+
+    fetch("https://en.wikipedia.org/api/rest_v1/page/summary/"+encodeURIComponent(player.wiki))
+      .then(r=>r.json())
+      .then(data=>{
+        if(active&&data.thumbnail?.source)setImage(data.thumbnail.source);
+      })
+      .catch(()=>{});
+
+    return()=>{active=false};
+
+  },[player.wiki]);
+
+  return(
+    <div className="superstar-card">
+
+      <div className="player-number">0{index+1}</div>
+
+     
