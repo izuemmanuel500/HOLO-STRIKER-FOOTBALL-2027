@@ -1,636 +1,88 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HOLO STRIKER FOOTBALL</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      user-select: none;
-      -webkit-user-select: none;
-    }
-
-    body {
-      background: #07110b;
-      color: white;
-      font-family: Arial, sans-serif;
-      overflow: hidden;
-    }
-
-    .game {
-      width: 100vw;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* SCOREBOARD */
-    .topbar {
-      height: 70px;
-      background: #111820;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 18px;
-      border-bottom: 2px solid #26333d;
-      z-index: 10;
-    }
-
-    .team {
-      font-size: 15px;
-      font-weight: bold;
-    }
-
-    .score {
-      font-size: 28px;
-      font-weight: 900;
-    }
-
-    .timer {
-      color: #80ff9a;
-      font-size: 14px;
-      margin-top: 3px;
-    }
-
-    /* PITCH */
-    .pitch-area {
-      flex: 1;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 15px;
-      overflow: hidden;
-    }
-
-    .pitch {
-      position: relative;
-      width: min(94vw, 900px);
-      height: min(72vh, 600px);
-      background:
-        repeating-linear-gradient(
-          90deg,
-          #16863b 0px,
-          #16863b 70px,
-          #197f39 70px,
-          #197f39 140px
-        );
-      border: 4px solid white;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 0 35px rgba(0, 255, 100, 0.18);
-    }
-
-    /* HALF WAY */
-    .halfway {
-      position: absolute;
-      left: 50%;
-      top: 0;
-      height: 100%;
-      width: 3px;
-      background: white;
-      transform: translateX(-50%);
-    }
-
-    .center-circle {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: 130px;
-      height: 130px;
-      border: 3px solid white;
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-    }
-
-    .center-dot {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: 8px;
-      height: 8px;
-      background: white;
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-    }
-
-    /* GOAL BOXES */
-    .box-left,
-    .box-right {
-      position: absolute;
-      top: 50%;
-      width: 90px;
-      height: 230px;
-      border: 3px solid white;
-      transform: translateY(-50%);
-    }
-
-    .box-left {
-      left: 0;
-      border-left: 0;
-    }
-
-    .box-right {
-      right: 0;
-      border-right: 0;
-    }
-
-    .goal-left,
-    .goal-right {
-      position: absolute;
-      top: 50%;
-      width: 18px;
-      height: 100px;
-      background: #eee;
-      border: 2px solid #222;
-      transform: translateY(-50%);
-    }
-
-    .goal-left {
-      left: -20px;
-    }
-
-    .goal-right {
-      right: -20px;
-    }
-
-    /* PLAYERS */
-    .player {
-      position: absolute;
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      font-weight: bold;
-      border: 2px solid white;
-      box-shadow: 0 3px 8px rgba(0,0,0,.5);
-      z-index: 4;
-    }
-
-    .blue {
-      background: #1677ff;
-    }
-
-    .red {
-      background: #e52c38;
-    }
-
-    .player.active {
-      outline: 4px solid #ffe600;
-      box-shadow: 0 0 18px #ffe600;
-    }
-
-    /* BALL */
-    .ball {
-      position: absolute;
-      width: 18px;
-      height: 18px;
-      background: white;
-      border: 2px solid #222;
-      border-radius: 50%;
-      z-index: 6;
-      box-shadow: 0 2px 5px rgba(0,0,0,.6);
-    }
-
-    /* CONTROLS */
-    .controls {
-      position: absolute;
-      bottom: 15px;
-      left: 15px;
-      right: 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      pointer-events: none;
-      z-index: 20;
-    }
-
-    .joystick {
-      width: 125px;
-      height: 125px;
-      border-radius: 50%;
-      background: rgba(10,20,25,.7);
-      border: 2px solid rgba(255,255,255,.35);
-      position: relative;
-      pointer-events: auto;
-      touch-action: none;
-    }
-
-    .stick {
-      width: 55px;
-      height: 55px;
-      border-radius: 50%;
-      background: rgba(255,255,255,.25);
-      border: 2px solid white;
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-    }
-
-    .action-buttons {
-      display: grid;
-      grid-template-columns: repeat(2, 70px);
-      gap: 12px;
-      pointer-events: auto;
-    }
-
-    .action-buttons button {
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      border: 2px solid white;
-      color: white;
-      background: rgba(15,25,35,.85);
-      font-weight: bold;
-      font-size: 12px;
-    }
-
-    .action-buttons button:active {
-      transform: scale(.92);
-      background: #176bff;
-    }
-
-    .pass {
-      background: rgba(0,120,255,.7) !important;
-    }
-
-    .shoot {
-      background: rgba(220,35,45,.8) !important;
-    }
-
-    .sprint {
-      background: rgba(20,160,80,.8) !important;
-    }
-
-    .tackle {
-      background: rgba(210,150,20,.8) !important;
-    }
-
-    /* STATUS */
-    .status {
-      position: absolute;
-      top: 85px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0,0,0,.7);
-      padding: 8px 15px;
-      border-radius: 20px;
-      font-size: 12px;
-      z-index: 30;
-    }
-
-    @media (max-width: 600px) {
-      .topbar {
-        height: 58px;
-        padding: 0 10px;
-      }
-
-      .team {
-        font-size: 11px;
-      }
-
-      .score {
-        font-size: 22px;
-      }
-
-      .pitch-area {
-        padding: 8px;
-      }
-
-      .pitch {
-        width: 96vw;
-        height: 65vh;
-      }
-
-      .center-circle {
-        width: 90px;
-        height: 90px;
-      }
-
-      .controls {
-        bottom: 8px;
-        left: 8px;
-        right: 8px;
-      }
-
-      .joystick {
-        width: 105px;
-        height: 105px;
-      }
-
-      .stick {
-        width: 48px;
-        height: 48px;
-      }
-
-      .action-buttons {
-        grid-template-columns: repeat(2, 60px);
-        gap: 8px;
-      }
-
-      .action-buttons button {
-        width: 60px;
-        height: 60px;
-      }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>HOLO STRIKER 2027 — 3D Pitch</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#07150c;font-family:Arial}
+canvas{display:block;width:100%;height:100%;touch-action:none}
+#tag{position:fixed;top:14px;left:50%;transform:translateX(-50%);padding:10px 14px;border-radius:10px;background:#06130ddd;border:1px solid #ffffff44;color:white;font-size:13px;font-weight:bold;letter-spacing:1px;white-space:nowrap}
+#hint{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);padding:8px 12px;border-radius:8px;background:#06130dcc;color:#fff;font-size:12px;white-space:nowrap}
+#error{display:none;position:fixed;top:70px;left:12px;right:12px;padding:15px;background:#520f0f;color:white;border-radius:8px}
+</style>
 </head>
-
 <body>
-
-<div class="game">
-
-  <!-- SCOREBOARD -->
-  <div class="topbar">
-    <div class="team">HOLO FC</div>
-
-    <div style="text-align:center;">
-      <div class="score">
-        <span id="homeScore">0</span>
-        -
-        <span id="awayScore">0</span>
-      </div>
-      <div class="timer" id="timer">00:00</div>
-    </div>
-
-    <div class="team">RIVALS FC</div>
-  </div>
-
-  <!-- GAME -->
-  <div class="pitch-area">
-
-    <div class="status" id="status">
-      HOLO STRIKER • READY
-    </div>
-
-    <div class="pitch" id="pitch">
-
-      <div class="halfway"></div>
-      <div class="center-circle"></div>
-      <div class="center-dot"></div>
-
-      <div class="box-left"></div>
-      <div class="box-right"></div>
-
-      <div class="goal-left"></div>
-      <div class="goal-right"></div>
-
-      <!-- BLUE TEAM -->
-      <div class="player blue active" id="p1"
-           style="left:18%; top:48%;">10</div>
-
-      <div class="player blue"
-           style="left:30%; top:25%;">7</div>
-
-      <div class="player blue"
-           style="left:30%; top:70%;">11</div>
-
-      <div class="player blue"
-           style="left:43%; top:48%;">9</div>
-
-      <div class="player blue"
-           style="left:8%; top:48%;">1</div>
-
-      <!-- RED TEAM -->
-      <div class="player red"
-           style="left:78%; top:48%;">9</div>
-
-      <div class="player red"
-           style="left:68%; top:25%;">7</div>
-
-      <div class="player red"
-           style="left:68%; top:70%;">11</div>
-
-      <div class="player red"
-           style="left:57%; top:48%;">8</div>
-
-      <div class="player red"
-           style="left:90%; top:48%;">1</div>
-
-      <!-- BALL -->
-      <div class="ball" id="ball"
-           style="left:47%; top:48%;"></div>
-
-    </div>
-  </div>
-
-  <!-- CONTROLS -->
-  <div class="controls">
-
-    <div class="joystick" id="joystick">
-      <div class="stick" id="stick"></div>
-    </div>
-
-    <div class="action-buttons">
-      <button class="pass" id="passBtn">PASS</button>
-      <button class="shoot" id="shootBtn">SHOOT</button>
-      <button class="sprint" id="sprintBtn">SPRINT</button>
-      <button class="tackle" id="tackleBtn">TACKLE</button>
-    </div>
-
-  </div>
-
-</div>
-
+<canvas id="c"></canvas><div id="tag">HOLO STRIKER 2027 • 3D STADIUM PITCH</div><div id="hint">DRAG TO ROTATE • PINCH TO ZOOM</div><div id="error"></div>
 <script>
-  const pitch = document.getElementById("pitch");
-  const player = document.getElementById("p1");
-  const ball = document.getElementById("ball");
-  const stick = document.getElementById("stick");
-  const joystick = document.getElementById("joystick");
-
-  const statusText = document.getElementById("status");
-  const timerText = document.getElementById("timer");
-
-  let playerX = 18;
-  let playerY = 48;
-
-  let joystickActive = false;
-
-  let gameSeconds = 0;
-
-  /* MATCH TIMER */
-  setInterval(() => {
-    gameSeconds++;
-
-    const minutes = Math.floor(gameSeconds / 60)
-      .toString()
-      .padStart(2, "0");
-
-    const seconds = (gameSeconds % 60)
-      .toString()
-      .padStart(2, "0");
-
-    timerText.textContent = minutes + ":" + seconds;
-  }, 1000);
-
-
-  /* MOVE PLAYER */
-  function movePlayer(dx, dy) {
-
-    playerX += dx;
-    playerY += dy;
-
-    if (playerX < 3) playerX = 3;
-    if (playerX > 94) playerX = 94;
-
-    if (playerY < 5) playerY = 5;
-    if (playerY > 88) playerY = 88;
-
-    player.style.left = playerX + "%";
-    player.style.top = playerY + "%";
-
-    /* Keep ball near player */
-    ball.style.left = (playerX + 3) + "%";
-    ball.style.top = (playerY + 1) + "%";
-
-    statusText.textContent = "PLAYER 10 • MOVING";
-  }
-
-
-  /* KEYBOARD CONTROLS */
-  document.addEventListener("keydown", (event) => {
-
-    const speed = 1.2;
-
-    if (event.key === "ArrowUp" || event.key.toLowerCase() === "w") {
-      movePlayer(0, -speed);
-    }
-
-    if (event.key === "ArrowDown" || event.key.toLowerCase() === "s") {
-      movePlayer(0, speed);
-    }
-
-    if (event.key === "ArrowLeft" || event.key.toLowerCase() === "a") {
-      movePlayer(-speed, 0);
-    }
-
-    if (event.key === "ArrowRight" || event.key.toLowerCase() === "d") {
-      movePlayer(speed, 0);
-    }
-  });
-
-
-  /* JOYSTICK */
-  function joystickMove(clientX, clientY) {
-
-    const rect = joystick.getBoundingClientRect();
-
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-
-    let dx = clientX - centerX;
-    let dy = clientY - centerY;
-
-    const maxDistance = 42;
-
-    const distance = Math.sqrt(dx * dx + dy * dy);
-
-    if (distance > maxDistance) {
-      dx = dx / distance * maxDistance;
-      dy = dy / distance * maxDistance;
-    }
-
-    stick.style.left = `calc(50% + ${dx}px)`;
-    stick.style.top = `calc(50% + ${dy}px)`;
-
-    const moveX = dx / maxDistance * 0.8;
-    const moveY = dy / maxDistance * 0.8;
-
-    movePlayer(moveX, moveY);
-  }
-
-
-  joystick.addEventListener("pointerdown", (e) => {
-    joystickActive = true;
-    joystick.setPointerCapture(e.pointerId);
-    joystickMove(e.clientX, e.clientY);
-  });
-
-
-  joystick.addEventListener("pointermove", (e) => {
-    if (!joystickActive) return;
-
-    joystickMove(e.clientX, e.clientY);
-  });
-
-
-  joystick.addEventListener("pointerup", () => {
-    joystickActive = false;
-
-    stick.style.left = "50%";
-    stick.style.top = "50%";
-
-    statusText.textContent = "HOLO STRIKER • READY";
-  });
-
-
-  /* PASS */
-  document.getElementById("passBtn").addEventListener("click", () => {
-
-    statusText.textContent = "PASS • BALL PASSED";
-
-    ball.style.left = (playerX + 12) + "%";
-
-    setTimeout(() => {
-      statusText.textContent = "PLAYER 10 • READY";
-    }, 900);
-  });
-
-
-  /* SHOOT */
-  document.getElementById("shootBtn").addEventListener("click", () => {
-
-    statusText.textContent = "SHOOT • ⚽";
-
-    ball.style.left = "88%";
-
-    setTimeout(() => {
-
-      statusText.textContent = "SHOT TAKEN";
-
-      setTimeout(() => {
-        ball.style.left = (playerX + 3) + "%";
-        ball.style.top = (playerY + 1) + "%";
-        statusText.textContent = "PLAYER 10 • READY";
-      }, 900);
-
-    }, 500);
-  });
-
-
-  /* SPRINT */
-  document.getElementById("sprintBtn").addEventListener("click", () => {
-
-    statusText.textContent = "SPRINT • ⚡";
-
-    movePlayer(5, 0);
-
-    setTimeout(() => {
-      statusText.textContent = "PLAYER 10 • READY";
-    }, 700);
-  });
-
-
-  /* TACKLE */
-  document.getElementById("tackleBtn").addEventListener("click", () => {
-
-    statusText.textContent = "TACKLE • DEFENDING";
-
-    setTimeout(() => {
-      statusText.textContent = "PLAYER 10 • READY";
-    }, 800);
-  });
-
+(()=>{
+const canvas=document.getElementById('c'),gl=canvas.getContext('webgl',{antialias:true});
+const error=document.getElementById('error');
+if(!gl){error.style.display='block';error.textContent='WebGL is not supported by this browser.';return;}
+const V=`attribute vec3 p;attribute vec3 c;uniform mat4 m;varying vec3 v;void main(){gl_Position=m*vec4(p,1.);v=c;}`;
+const F=`precision mediump float;varying vec3 v;void main(){gl_FragColor=vec4(v,1.);}`;
+function sh(t,s){let x=gl.createShader(t);gl.shaderSource(x,s);gl.compileShader(x);if(!gl.getShaderParameter(x,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(x));return x;}
+let pr=gl.createProgram();
+try{gl.attachShader(pr,sh(gl.VERTEX_SHADER,V));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,F));gl.linkProgram(pr);if(!gl.getProgramParameter(pr,gl.LINK_STATUS))throw Error('Could not link 3D program');}
+catch(e){error.style.display='block';error.textContent=e.message;return;}
+gl.useProgram(pr);
+const P=gl.getAttribLocation(pr,'p'),C=gl.getAttribLocation(pr,'c'),M=gl.getUniformLocation(pr,'m');
+let verts=[],cols=[],lines=[],lcols=[];
+function tri(a,b,c,col){[a,b,c].forEach(q=>{verts.push(...q);cols.push(...col)});}
+function quad(a,b,c,d,col){tri(a,b,c,col);tri(a,c,d,col);}
+function ln(a,b,col=[.96,.98,.96]){lines.push(...a,...b);lcols.push(...col,...col);}
+const G1=[.055,.37,.14],G2=[.075,.44,.18],W=[.96,.98,.96],N=[.68,.82,.73];
+quad([-34,0,-52.5],[34,0,-52.5],[34,0,52.5],[-34,0,52.5],G1);
+for(let i=0;i<10;i++){let z=-52.5+i*10.5;quad([-34,.01,z],[34,.01,z],[34,.01,z+10.5],[-34,.01,z+10.5],i%2?G1:G2);}
+const y=.035;
+function L(x1,z1,x2,z2){ln([x1,y,z1],[x2,y,z2]);}
+L(-34,-52.5,34,-52.5);L(34,-52.5,34,52.5);L(34,52.5,-34,52.5);L(-34,52.5,-34,-52.5);L(-34,0,34,0);
+function rect(x1,z1,x2,z2){L(x1,z1,x2,z1);L(x2,z1,x2,z2);L(x2,z2,x1,z2);L(x1,z2,x1,z1);}
+rect(-20.16,-52.5,20.16,-36);rect(-20.16,36,20.16,52.5);
+rect(-9.16,-52.5,9.16,-41.5);rect(-9.16,41.5,9.16,52.5);
+for(let i=0;i<100;i++){let a=i*Math.PI*2/100,b=(i+1)*Math.PI*2/100;L(9.15*Math.cos(a),9.15*Math.sin(a),9.15*Math.cos(b),9.15*Math.sin(b));}
+for(let s of [-1,1]){let z=s*41.5;for(let i=0;i<60;i++){let a=i*Math.PI*2/60,b=(i+1)*Math.PI*2/60;L(9.15*Math.cos(a),z+s*9.15*Math.sin(a),9.15*Math.cos(b),z+s*9.15*Math.sin(b));}}
+L(-.4,0,.4,0);L(0,-.4,0,.4);
+// Goal frames and net grids, both ends
+function goal(s){
+ let z=s*52.5,bz=z+s*2.7,w=3.66,h=2.44;
+ const A=[-w,0,z],B=[w,0,z],C=[-w,h,z],D=[w,h,z];
+ // white frame represented by paired bright line segments
+ [[A,C],[B,D],[C,D]].forEach(q=>ln(q[0],q[1],[1,1,1]));
+ // net sides, roof, back
+ [[A,[-w,0,bz]],[B,[w,0,bz]],[C,[-w,h,bz]],[D,[w,h,bz]],[[-w,0,bz],[w,0,bz]],[[-w,h,bz],[w,h,bz]],[[-w,0,bz],[-w,h,bz]],[[w,0,bz],[w,h,bz]]].forEach(q=>ln(q[0],q[1],N));
+ for(let i=1;i<9;i++){let x=-w+2*w*i/9;ln([x,0,bz],[x,h,bz],N);}
+ for(let i=1;i<6;i++){let yy=h*i/6;ln([-w,yy,bz],[w,yy,bz],N);}
+ for(let i=1;i<5;i++){let zz=z+s*2.7*i/5;ln([-w,0,zz],[w,0,zz],N);ln([-w,h,zz],[w,h,zz],N);}
+}
+goal(-1);goal(1);
+function buf(data){let b=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(data),gl.STATIC_DRAW);return b;}
+const bp=buf(verts),bc=buf(cols),bl=buf(lines),blc=buf(lcols);
+function attr(b,loc){gl.bindBuffer(gl.ARRAY_BUFFER,b);gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,3,gl.FLOAT,false,0,0);}
+function norm(a){let d=Math.hypot(...a)||1;return a.map(x=>x/d);}
+function dot(a,b){return a[0]*b[0]+a[1]*b[1]+a[2]*b[2];}
+function cross(a,b){return[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];}
+function view(eye,at){let z=norm(eye.map((v,i)=>v-at[i])),x=norm(cross([0,1,0],z)),y=cross(z,x);return[x[0],y[0],z[0],0,x[1],y[1],z[1],0,x[2],y[2],z[2],0,-dot(x,eye),-dot(y,eye),-dot(z,eye),1];}
+function persp(f,a,n,f2){let t=1/Math.tan(f/2),q=1/(n-f2);return[t/a,0,0,0,0,t,0,0,0,0,(f2+n)*q,-1,0,0,2*f2*n*q,0];}
+function mul(a,b){let o=Array(16);for(let c=0;c<4;c++)for(let r=0;r<4;r++)o[c*4+r]=a[r]*b[c*4]+a[4+r]*b[c*4+1]+a[8+r]*b[c*4+2]+a[12+r]*b[c*4+3];return o;}
+let yaw=.7,pitch=.9,dist=120,drag=null;
+canvas.addEventListener('pointerdown',e=>{drag=[e.clientX,e.clientY];canvas.setPointerCapture(e.pointerId);});
+canvas.addEventListener('pointermove',e=>{if(!drag)return;yaw+=(e.clientX-drag[0])*.008;pitch=Math.max(.25,Math.min(1.4,pitch+(e.clientY-drag[1])*.006));drag=[e.clientX,e.clientY];});
+canvas.addEventListener('pointerup',()=>drag=null);canvas.addEventListener('pointercancel',()=>drag=null);
+let pinch=0;
+canvas.addEventListener('touchstart',e=>{if(e.touches.length===2)pinch=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);},{passive:true});
+canvas.addEventListener('touchmove',e=>{if(e.touches.length===2){let d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);dist=Math.max(78,Math.min(190,dist-(d-pinch)*.12));pinch=d;}},{passive:true});
+function draw(){
+ let w=canvas.clientWidth,h=canvas.clientHeight,r=Math.min(devicePixelRatio||1,2);
+ if(canvas.width!==w*r||canvas.height!==h*r){canvas.width=w*r;canvas.height=h*r;}
+ gl.viewport(0,0,canvas.width,canvas.height);gl.enable(gl.DEPTH_TEST);gl.clearColor(.025,.07,.04,1);gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+ let eye=[Math.sin(yaw)*dist*Math.cos(pitch),dist*Math.sin(pitch),Math.cos(yaw)*dist*Math.cos(pitch)];
+ gl.uniformMatrix4fv(M,false,new Float32Array(mul(persp(Math.PI/4,canvas.width/canvas.height,.1,500),view(eye,[0,0,0]))));
+ attr(bp,P);attr(bc,C);gl.drawArrays(gl.TRIANGLES,0,verts.length/3);
+ attr(bl,P);attr(blc,C);gl.lineWidth(2);gl.drawArrays(gl.LINES,0,lines.length/3);
+ requestAnimationFrame(draw);
+}
+draw();
+})();
 </script>
-
-</body>
-  </html>
+</body></html>
