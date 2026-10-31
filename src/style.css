@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap');
 
+/* =================================
+   HOLO STRIKER GLOBAL STYLES
+================================= */
+
 :root {
   --bg: #050b12;
   --panel: #0c1722;
@@ -57,7 +61,9 @@ a {
     var(--bg);
 }
 
-/* HEADER */
+/* =================================
+   HEADER
+================================= */
 
 .top-header {
   height: 75px;
@@ -190,7 +196,9 @@ a {
   font-weight: 800;
 }
 
-/* MAIN LAYOUT */
+/* =================================
+   MAIN LAYOUT
+================================= */
 
 .app-layout {
   display: flex;
@@ -312,7 +320,9 @@ a {
   box-shadow: 0 0 9px var(--green);
 }
 
-/* MAIN CONTENT */
+/* =================================
+   MAIN CONTENT
+================================= */
 
 .main-content {
   flex: 1;
@@ -336,7 +346,9 @@ a {
   color: var(--gold);
 }
 
-/* HERO BANNER */
+/* =================================
+   HERO BANNER
+================================= */
 
 .hero-banner {
   min-height: 365px;
@@ -478,7 +490,9 @@ a {
   margin-top: 12px;
 }
 
-/* QUICK ACCESS */
+/* =================================
+   QUICK ACCESS
+================================= */
 
 .quick-access {
   display: grid;
@@ -534,7 +548,9 @@ a {
   flex-shrink: 0;
 }
 
-/* SECTION HEADINGS */
+/* =================================
+   SECTION HEADINGS
+================================= */
 
 .home-section {
   margin: 42px 0;
@@ -575,7 +591,9 @@ a {
   white-space: nowrap;
 }
 
-/* MOMENTS */
+/* =================================
+   FOOTBALL MOMENTS
+================================= */
 
 .moments-grid {
   display: grid;
@@ -655,7 +673,9 @@ a {
   font-weight: 900;
 }
 
-/* SUPERSTAR PLAYERS */
+/* =================================
+   SUPERSTAR PLAYERS
+================================= */
 
 .superstar-grid {
   display: grid;
@@ -750,7 +770,9 @@ a {
   letter-spacing: 1px;
 }
 
-/* CAREER CARDS */
+/* =================================
+   CAREER CARDS
+================================= */
 
 .career-grid {
   display: grid;
@@ -813,7 +835,9 @@ a {
   margin-top: 18px;
 }
 
-/* COMPETITIONS */
+/* =================================
+   COMPETITIONS
+================================= */
 
 .competition-grid {
   display: grid;
@@ -877,7 +901,9 @@ a {
   font-weight: 900;
 }
 
-/* FINAL BANNER */
+/* =================================
+   FINAL BANNER
+================================= */
 
 .final-banner {
   display: flex;
@@ -912,7 +938,9 @@ a {
   line-height: 1.7;
 }
 
-/* GENERAL PAGES */
+/* =================================
+   GENERAL PAGES
+================================= */
 
 .content-page {
   min-height: 70vh;
@@ -943,6 +971,8 @@ a {
   font-size: 12px;
   line-height: 1.7;
 }
+
+/* PROFILE */
 
 .profile-panel {
   max-width: 480px;
@@ -982,7 +1012,9 @@ a {
   margin-top: 20px;
 }
 
-/* COACH MODE */
+/* =================================
+   COACH MODE
+================================= */
 
 .coach-panel {
   max-width: 700px;
@@ -1139,7 +1171,9 @@ a {
   color: var(--green);
 }
 
-/* SIMPLE FEATURE PAGE */
+/* =================================
+   SIMPLE FEATURE PAGE
+================================= */
 
 .simple-feature-panel {
   display: flex;
@@ -1220,7 +1254,9 @@ a {
   font-size: 11px;
 }
 
-/* REGISTRATION MODAL */
+/* =================================
+   REGISTRATION MODAL
+================================= */
 
 .modal-overlay {
   position: fixed;
@@ -1333,7 +1369,9 @@ a {
   margin-top: 17px;
 }
 
-/* FOOTER */
+/* =================================
+   FOOTER
+================================= */
 
 .holo-footer {
   min-height: 65px;
@@ -1359,7 +1397,382 @@ a {
   letter-spacing: 2px;
 }
 
-/* TABLET */
+/* =================================
+   GAME CENTER
+================================= */
+
+.holo-game-center {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.play-mode-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 25px;
+}
+
+.play-mode-card {
+  min-width: 0;
+  padding: 20px 16px;
+  text-align: left;
+  color: var(--white);
+  background: linear-gradient(145deg, #122536, #09131e);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  transition: .2s;
+}
+
+.play-mode-card:hover,
+.play-mode-card.selected {
+  border-color: var(--green);
+  background: linear-gradient(145deg, #12352d, #091b20);
+  transform: translateY(-3px);
+}
+
+.play-mode-icon {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 17px;
+  color: var(--green);
+  background: rgba(0,230,118,.1);
+  border-radius: 11px;
+}
+
+.play-mode-card h3 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 12px;
+  margin-bottom: 9px;
+}
+
+.play-mode-card p {
+  min-height: 38px;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+.play-mode-card > span {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px;
+  margin-top: 16px;
+  color: var(--gold);
+  font-size: 9px;
+  font-weight: 900;
+}
+
+/* MATCH CONFIGURATION */
+
+.match-setup-panel,
+.match-preview-panel,
+.match-history-panel {
+  padding: 25px;
+  margin-bottom: 23px;
+  background: linear-gradient(145deg, #102536, #09131e);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+.match-setup-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+  color: var(--green);
+}
+
+.match-setup-heading small {
+  color: var(--green);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.match-setup-heading h2 {
+  margin-top: 8px;
+  color: white;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 17px;
+}
+
+.match-team-selection {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 20px;
+  padding: 30px 10px;
+}
+
+.match-team {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+}
+
+.team-emblem {
+  width: 85px;
+  height: 85px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 14px;
+  color: var(--green);
+  background: rgba(0,230,118,.09);
+  border: 1px solid rgba(0,230,118,.25);
+  border-radius: 18px;
+}
+
+.opponent-emblem {
+  color: var(--blue);
+  background: rgba(0,184,255,.09);
+  border-color: rgba(0,184,255,.25);
+}
+
+.match-team > small {
+  margin-bottom: 10px;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.match-team select,
+.match-options select {
+  width: 100%;
+  max-width: 220px;
+  padding: 13px;
+  color: white;
+  background: #07111b;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.match-team select option,
+.match-options select option {
+  background: #07111b;
+}
+
+.match-team select:focus,
+.match-options select:focus {
+  border-color: var(--green);
+}
+
+.match-team select:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+/* VS DISPLAY */
+
+.versus-display {
+  width: 55px;
+  height: 55px;
+  display: grid;
+  place-items: center;
+  color: var(--gold);
+  background: rgba(255,200,87,.1);
+  border: 1px solid rgba(255,200,87,.3);
+  border-radius: 50%;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 15px;
+  font-weight: 900;
+}
+
+/* MATCH OPTIONS */
+
+.match-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 17px;
+  padding: 20px 0;
+  border-top: 1px solid var(--border);
+}
+
+.match-options > div {
+  min-width: 0;
+}
+
+.match-options label {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--green);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.match-options select {
+  max-width: none;
+}
+
+.start-match-button {
+  width: 100%;
+  min-height: 50px;
+  margin-top: 10px;
+}
+
+/* MATCH PREVIEW */
+
+.match-preview-panel {
+  text-align: center;
+  border-color: rgba(0,230,118,.3);
+}
+
+.match-preview-top {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--green);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.match-preview-panel > h2 {
+  margin: 22px 0;
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(17px, 3vw, 25px);
+}
+
+.match-preview-versus {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 15px;
+  max-width: 550px;
+  margin: 25px auto;
+}
+
+.match-preview-versus > div {
+  color: var(--green);
+}
+
+.match-preview-versus > div:last-child {
+  color: var(--blue);
+}
+
+.match-preview-versus h3 {
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+.match-preview-versus > strong {
+  color: var(--gold);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 20px;
+}
+
+.match-preview-details {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 22px 0;
+}
+
+.match-preview-details span {
+  padding: 9px 12px;
+  color: var(--gold);
+  background: rgba(255,200,87,.08);
+  border: 1px solid rgba(255,200,87,.2);
+  border-radius: 6px;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.match-preview-panel > p {
+  max-width: 550px;
+  margin: 0 auto 20px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+/* MATCH HISTORY */
+
+.match-history-panel .section-title {
+  margin-bottom: 20px;
+}
+
+.match-history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding: 17px 5px;
+  border-bottom: 1px solid var(--border);
+}
+
+.match-history-item:last-child {
+  border-bottom: none;
+}
+
+.match-history-item strong {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 12px;
+}
+
+.match-history-item small {
+  display: block;
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 9px;
+}
+
+/* =================================
+   SETTINGS PAGE
+================================= */
+
+.settings-panel {
+  max-width: 700px;
+  padding: 10px 22px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 13px;
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 20px 5px;
+  border-bottom: 1px solid var(--border);
+}
+
+.setting-row:last-child {
+  border-bottom: none;
+}
+
+.setting-row h3 {
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.setting-row p {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.setting-row input[type="checkbox"] {
+  width: 19px;
+  height: 19px;
+  accent-color: var(--green);
+  cursor: pointer;
+}
+
+/* =================================
+   TABLET RESPONSIVE
+================================= */
 
 @media (max-width: 1100px) {
   .sidebar {
@@ -1383,7 +1796,15 @@ a {
   }
 }
 
-/* MOBILE */
+@media (max-width: 900px) {
+  .play-mode-grid {
+    grid-template-columns: repeat(2, minmax(0,1fr));
+  }
+}
+
+/* =================================
+   MOBILE RESPONSIVE
+================================= */
 
 @media (max-width: 700px) {
   .top-header {
@@ -1663,9 +2084,74 @@ a {
     text-align: center;
     padding: 17px;
   }
+
+  /* GAME CENTER MOBILE */
+
+  .match-setup-panel,
+  .match-preview-panel,
+  .match-history-panel {
+    padding: 17px;
+  }
+
+  .match-setup-heading h2 {
+    font-size: 14px;
+  }
+
+  .match-team-selection {
+    gap: 8px;
+    padding: 23px 0;
+  }
+
+  .team-emblem {
+    width: 65px;
+    height: 65px;
+  }
+
+  .match-team select {
+    padding: 10px 5px;
+    font-size: 10px;
+  }
+
+  .match-options {
+    grid-template-columns: 1fr;
+  }
+
+  .match-preview-details {
+    flex-direction: column;
+  }
+
+  .match-preview-details span {
+    width: 100%;
+  }
+
+  .match-history-item {
+    align-items: flex-start;
+  }
+
+  .match-history-item strong {
+    font-size: 10px;
+  }
+
+  .play-mode-card {
+    padding: 15px 11px;
+  }
+
+  .play-mode-card h3 {
+    font-size: 10px;
+  }
+
+  .play-mode-card p {
+    font-size: 9px;
+  }
+
+  .settings-panel {
+    padding: 8px 14px;
+  }
 }
 
-/* SMALL PHONES */
+/* =================================
+   SMALL PHONES
+================================= */
 
 @media (max-width: 380px) {
   .holo-logo h2 {
@@ -1692,4 +2178,16 @@ a {
     flex-direction: column;
     align-items: flex-start;
   }
-                                           }
+
+  .play-mode-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .match-preview-versus {
+    gap: 7px;
+  }
+
+  .match-preview-versus h3 {
+    font-size: 10px;
+  }
+    }
