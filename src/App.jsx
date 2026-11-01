@@ -1457,4 +1457,4 @@ function CompetitionCard({ icon, title, subtitle, color, onClick }) {
       <span>EXPLORE <ChevronRight size={15} /></span>
     </button>
   );
-    }
+}
