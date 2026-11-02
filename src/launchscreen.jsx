@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import {
   Trophy,
@@ -8,6 +7,7 @@ import {
   Star,
   ChartNoAxesCombined
 } from "lucide-react";
+
 import "./launch-screen.css";
 
 const stars = [
@@ -15,10 +15,12 @@ const stars = [
   "Cristiano Ronaldo",
   "Kylian Mbappé",
   "Erling Haaland",
-  "Neymar"
+  "Neymar",
+  "Vinícius Júnior",
+  "Lamine Yamal"
 ];
 
-const ratings = [97, 96, 95, 95, 94];
+const ratings = [97, 96, 95, 95, 94, 94, 93];
 
 const features = [
   { icon: Gamepad2, title: "STUNNING", sub: "GAMEPLAY" },
@@ -32,50 +34,57 @@ const features = [
 export default function LaunchScreen({ onEnter }) {
   const [progress, setProgress] = useState(0);
   const [photos, setPhotos] = useState({});
-  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     let value = 0;
 
     const timer = setInterval(() => {
-      value += Math.floor(Math.random() * 5) + 1;
+      value = Math.min(value + Math.floor(Math.random() * 5) + 2, 100);
+      setProgress(value);
 
       if (value >= 100) {
-        value = 100;
         clearInterval(timer);
-        setReady(true);
-      }
 
-      setProgress(value);
-    }, 180);
+        setTimeout(() => {
+          onEnter?.();
+        }, 900);
+      }
+    }, 130);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [onEnter]);
 
   useEffect(() => {
-    stars.forEach(async (name) => {
-      try {
-        const response = await fetch(
-          `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(name.replaceAll(" ", "_"))}`
-        );
+    let active = true;
 
-        const data = await response.json();
+    Promise.all(
+      stars.map(async name => {
+        try {
+          const response = await fetch(
+            `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(name.replaceAll(" ", "_"))}`
+          );
 
-        if (data.thumbnail?.source) {
-          setPhotos(old => ({
-            ...old,
-            [name]: data.thumbnail.source
-          }));
+          const data = await response.json();
+
+          if (active && data.thumbnail?.source) {
+            setPhotos(old => ({
+              ...old,
+              [name]: data.thumbnail.source
+            }));
+          }
+        } catch {
+          // Player initials remain visible if photos fail.
         }
-      } catch {
-        // Keep the player card visible if a photo cannot load.
-      }
-    });
+      })
+    );
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   return (
     <main className="holo-launch">
-
       <div className="stadium-glow" />
       <div className="stadium-lights" />
       <div className="stadium-lines" />
@@ -88,13 +97,9 @@ export default function LaunchScreen({ onEnter }) {
       </header>
 
       <section className="launch-hero">
-
         <div className="messi-feature">
           {photos["Lionel Messi"] ? (
-            <img
-              src={photos["Lionel Messi"]}
-              alt="Lionel Messi"
-            />
+            <img src={photos["Lionel Messi"]} alt="Lionel Messi" />
           ) : (
             <div className="player-placeholder">MESSI</div>
           )}
@@ -109,7 +114,6 @@ export default function LaunchScreen({ onEnter }) {
 
         <div className="launch-brand">
           <div className="football-symbol">⚽</div>
-
           <p className="brand-small">THE FUTURE OF FOOTBALL</p>
 
           <h1>
@@ -118,7 +122,6 @@ export default function LaunchScreen({ onEnter }) {
           </h1>
 
           <h2>FOOTBALL <b>2027</b></h2>
-
           <div className="brand-line" />
 
           <p className="brand-slogan">
@@ -142,12 +145,16 @@ export default function LaunchScreen({ onEnter }) {
                 {photos[name] ? (
                   <img src={photos[name]} alt={name} />
                 ) : (
-                  <span>{name.split(" ").map(x => x[0]).join("")}</span>
+                  <span>
+                    {name.split(" ").map(x => x[0]).join("")}
+                  </span>
                 )}
+
                 <b>{index + 1}</b>
               </div>
 
               <h3>{name}</h3>
+
               <div className="rating-line">
                 <span>OVR</span>
                 <strong>{ratings[index]}</strong>
@@ -159,7 +166,7 @@ export default function LaunchScreen({ onEnter }) {
 
       <section className="loading-section">
         <h3>
-          {ready
+          {progress >= 100
             ? "FOOTBALL WORLD READY"
             : "INITIALIZING HOLO STRIKER EXPERIENCE..."}
         </h3>
@@ -171,7 +178,9 @@ export default function LaunchScreen({ onEnter }) {
           />
         </div>
 
-        <strong className="loading-number">{progress}%</strong>
+        <strong className="loading-number">
+          {progress}%
+        </strong>
       </section>
 
       <section className="launch-features">
@@ -187,14 +196,10 @@ export default function LaunchScreen({ onEnter }) {
       <footer className="launch-footer">
         <span>BUILD 2027 • HOLO STRIKER</span>
 
-        <button
-          disabled={!ready}
-          onClick={onEnter}
-        >
-          {ready ? "ENTER FOOTBALL WORLD →" : "PLEASE WAIT..."}
-        </button>
+        <strong>
+          {progress >= 100 ? "ENTERING FOOTBALL WORLD..." : "PLEASE WAIT..."}
+        </strong>
       </footer>
-
     </main>
   );
   }
