@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import LaunchScreen from "./launchscreen.jsx";
+
 import {
   Home, Play, Trophy, Shield, Users, User,
   Globe, Target, Settings, Store, Crown,
@@ -51,6 +53,7 @@ function loadStorage(key, fallback) {
 
 export default function App() {
   const [page, setPage] = useState("home");
+  const [showLaunch, setShowLaunch] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [account, setAccount] = useState(null);
@@ -117,6 +120,16 @@ export default function App() {
     localStorage.removeItem("holo_player");
     setAccount(null);
     navigate("home");
+  }
+
+  /* CINEMATIC LAUNCH SCREEN */
+
+  if (showLaunch) {
+    return (
+      <LaunchScreen
+        onEnter={() => setShowLaunch(false)}
+      />
+    );
   }
 
   return (
