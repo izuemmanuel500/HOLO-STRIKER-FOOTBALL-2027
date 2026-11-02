@@ -1,415 +1,54 @@
-.holo-launch {
-  min-height: 100vh;
-  position: relative;
-  overflow: hidden;
-  isolation: isolate;
-  color: #fff;
-  background:
-    radial-gradient(ellipse at 50% 40%, #075d91 0%, transparent 45%),
-    linear-gradient(135deg, #020817, #031b35 55%, #020611);
-  font-family: Arial, sans-serif;
-  padding: 20px;
-}
+/* HOLO STRIKER LANDSCAPE EXPERIENCE */
 
-.stadium-glow {
-  position: absolute;
-  inset: 0;
-  z-index: -2;
-  background:
-    radial-gradient(ellipse at 15% 20%, #00d9ff55, transparent 30%),
-    radial-gradient(ellipse at 85% 25%, #00ff7750, transparent 30%),
-    linear-gradient(transparent 65%, #00d9ff20);
-}
-
-.stadium-lights {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 240px;
-  z-index: -1;
-  opacity: .8;
-  background:
-    repeating-linear-gradient(
-      110deg,
-      transparent 0 70px,
-      #00d9ff35 72px,
-      transparent 75px 130px
-    );
-  filter: blur(2px);
-}
-
-.stadium-lines {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 180px;
-  z-index: -1;
-  background:
-    repeating-linear-gradient(
-      90deg,
-      transparent 0 80px,
-      #00d9ff20 82px,
-      transparent 84px 160px
-    );
-  border-top: 2px solid #00eaff40;
-}
-
-.launch-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: 900;
-  letter-spacing: 2px;
-  color: #8ceeff;
-  font-size: 12px;
-}
-
-.online-indicator i {
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  background: #00ff88;
-  border-radius: 50%;
-  box-shadow: 0 0 12px #00ff88;
-}
-
-.launch-hero {
-  min-height: 340px;
-  display: grid;
-  grid-template-columns: 1fr 1.3fr .5fr;
-  align-items: center;
-  gap: 15px;
-}
-
-.messi-feature {
-  height: 320px;
-  position: relative;
-  overflow: hidden;
-}
-
-.messi-feature img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center top;
-  mask-image: linear-gradient(to bottom, black 65%, transparent);
-}
-
-.player-placeholder {
-  height: 100%;
-  display: grid;
-  place-items: center;
-  color: #00eaff;
-  font-size: 30px;
-  font-weight: 900;
-}
-
-.messi-label {
-  position: absolute;
-  bottom: 5px;
-  left: 10px;
-  text-shadow: 0 2px 10px #000;
-}
-
-.messi-label span {
-  color: #00ff99;
-  font-size: 10px;
-}
-
-.messi-label h2 {
-  font-size: 21px;
-  margin: 5px 0;
-}
-
-.messi-label p {
-  font-size: 11px;
-}
-
-.messi-label strong {
-  color: #aaff00;
-}
-
-.launch-brand {
-  text-align: center;
-  text-shadow: 0 0 25px #00d9ff;
-}
-
-.football-symbol {
-  font-size: 65px;
-  animation: ball-float 3s ease-in-out infinite;
-}
-
-.brand-small {
-  font-size: 10px;
-  letter-spacing: 4px;
-  color: #6ffaff;
-}
-
-.launch-brand h1 {
-  font-size: clamp(35px, 7vw, 75px);
-  font-style: italic;
-  font-weight: 1000;
-  line-height: .85;
-  color: #fff;
-  -webkit-text-stroke: 1px #00d9ff;
-  text-shadow:
-    0 0 10px #00d9ff,
-    0 0 30px #00aaff;
-}
-
-.launch-brand h1 span {
-  display: block;
-  color: #b5ff00;
-}
-
-.launch-brand h2 {
-  color: #fff;
-  letter-spacing: 5px;
-  font-size: 20px;
-}
-
-.launch-brand h2 b {
-  color: #b5ff00;
-}
-
-.brand-line {
-  height: 3px;
-  width: 70%;
-  margin: 15px auto;
-  background: linear-gradient(90deg, transparent, #00eaff, #aaff00, transparent);
-}
-
-.brand-slogan {
-  font-size: 12px;
-  letter-spacing: 3px;
-  color: #aaff00;
-}
-
-.floating-ball {
-  font-size: 75px;
-  filter: drop-shadow(0 0 18px #00d9ff);
-  animation: ball-float 4s ease-in-out infinite;
-}
-
-@keyframes ball-float {
-  50% {
-    transform: translateY(-14px) rotate(12deg);
+@media (orientation: landscape) {
+  .holo-launch {
+    min-height: 100vh;
+    width: 100%;
   }
 }
 
-.top-players {
-  margin-top: 10px;
-  border-top: 1px solid #00d9ff55;
-  border-bottom: 1px solid #00d9ff55;
-  padding: 15px 0;
-}
+/* Landscape layout on smaller screens */
 
-.section-heading {
-  display: flex;
-  justify-content: space-between;
-  color: #79eaff;
-  font-size: 11px;
-  font-weight: bold;
-  letter-spacing: 2px;
-  margin-bottom: 12px;
-}
-
-.player-strip {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
-}
-
-.launch-player {
-  background: linear-gradient(145deg, #082b49dd, #061323ee);
-  border: 1px solid #00cfff88;
-  border-radius: 12px;
-  padding: 9px;
-  text-align: center;
-  box-shadow: 0 0 15px #00aaff20;
-}
-
-.player-photo {
-  height: 115px;
-  position: relative;
-  overflow: hidden;
-  border-radius: 8px;
-  background: linear-gradient(145deg, #07547c, #061323);
-  display: grid;
-  place-items: center;
-  color: #b5ff00;
-  font-size: 25px;
-  font-weight: 900;
-}
-
-.player-photo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.player-photo b {
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  background: #00bfff;
-  padding: 4px 8px;
-  border-radius: 5px;
-  color: #001;
-}
-
-.launch-player h3 {
-  font-size: 12px;
-  margin: 10px 0;
-}
-
-.rating-line {
-  display: flex;
-  justify-content: space-between;
-  color: #9cffff;
-  font-size: 12px;
-}
-
-.rating-line strong {
-  color: #b5ff00;
-  font-size: 18px;
-}
-
-.loading-section {
-  text-align: center;
-  margin: 25px auto;
-  max-width: 800px;
-}
-
-.loading-section h3 {
-  font-size: 13px;
-  letter-spacing: 2px;
-  color: #aaff00;
-}
-
-.loading-track {
-  height: 15px;
-  border: 2px solid #00d9ff;
-  border-radius: 30px;
-  overflow: hidden;
-  background: #00101e;
-  box-shadow: 0 0 15px #00d9ff55;
-}
-
-.loading-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #00aaff, #00ff99, #b5ff00);
-  box-shadow: 0 0 20px #00ff99;
-  transition: width .2s;
-}
-
-.loading-number {
-  display: block;
-  color: #b5ff00;
-  margin-top: 8px;
-}
-
-.launch-features {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  background: #031426dd;
-  border: 1px solid #00d9ff88;
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.feature-item {
-  padding: 15px 5px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  text-align: center;
-  border-right: 1px solid #00d9ff44;
-  color: #00eaff;
-}
-
-.feature-item strong,
-.feature-item span {
-  font-size: 10px;
-  color: white;
-}
-
-.feature-item svg {
-  color: #b5ff00;
-}
-
-.launch-footer {
-  margin-top: 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  color: #79eaff;
-  font-size: 11px;
-}
-
-.launch-footer button {
-  background: linear-gradient(90deg, #00aaff, #aaff00);
-  color: #00111d;
-  font-weight: 900;
-  padding: 13px 22px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.launch-footer button:disabled {
-  opacity: .45;
-  cursor: wait;
-}
-
-@media (max-width: 650px) {
+@media (orientation: landscape) and (max-height: 500px) {
   .holo-launch {
-    padding: 12px;
+    padding: 8px 18px;
   }
 
   .launch-hero {
-    grid-template-columns: .8fr 1.2fr;
-    min-height: 250px;
+    min-height: 180px;
+    grid-template-columns: .8fr 1.4fr .4fr;
   }
 
   .messi-feature {
-    height: 250px;
+    height: 175px;
   }
 
-  .floating-ball {
-    display: none;
+  .player-photo {
+    height: 75px;
   }
 
-  .launch-brand h1 {
-    font-size: 38px;
+  .launch-player {
+    padding: 5px;
   }
 
-  .launch-brand h2 {
-    font-size: 13px;
-    letter-spacing: 2px;
+  .launch-player h3 {
+    font-size: 10px;
+    margin: 5px 0;
   }
 
-  .player-strip {
-    grid-template-columns: repeat(2, 1fr);
+  .loading-section {
+    margin: 10px auto;
   }
 
-  .launch-player:last-child {
-    display: none;
-  }
-
-  .launch-features {
-    grid-template-columns: repeat(3, 1fr);
+  .loading-track {
+    height: 10px;
   }
 
   .feature-item {
-    border-bottom: 1px solid #00d9ff44;
+    padding: 8px 4px;
   }
 
   .launch-footer {
-    flex-direction: column;
+    margin-top: 10px;
   }
-  }
+}
