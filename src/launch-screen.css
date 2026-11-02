@@ -1,54 +1,574 @@
-/* HOLO STRIKER LANDSCAPE EXPERIENCE */
+* {
+  box-sizing: border-box;
+}
 
-@media (orientation: landscape) {
-  .holo-launch {
-    min-height: 100vh;
-    width: 100%;
+.holo-launch {
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(ellipse at 50% 35%, #075bff 0%, transparent 48%),
+    linear-gradient(180deg, #01051c, #00164d 55%, #001b0d);
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* STADIUM BACKGROUND */
+
+.stadium-background {
+  position: absolute;
+  inset: 0;
+  z-index: -5;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(0, 0, 30, .15),
+      rgba(0, 10, 55, .15) 50%,
+      rgba(0, 30, 10, .1)
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 80px,
+      rgba(0, 140, 255, .08) 82px,
+      transparent 84px 160px
+    ),
+    radial-gradient(
+      ellipse at center,
+      #0754d8,
+      #00133e 65%,
+      #00051a
+    );
+}
+
+.stadium-lights {
+  position: absolute;
+  z-index: -3;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 35%;
+  background:
+    repeating-linear-gradient(
+      110deg,
+      transparent 0 45px,
+      rgba(0, 180, 255, .55) 47px,
+      transparent 50px 95px
+    );
+  filter: blur(9px);
+  opacity: .8;
+}
+
+.stadium-glow {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(ellipse at 50% 10%, #007bff77, transparent 35%),
+    radial-gradient(ellipse at 5% 45%, #006aff88, transparent 30%),
+    radial-gradient(ellipse at 95% 45%, #006aff88, transparent 30%);
+}
+
+.stadium-crowd {
+  position: absolute;
+  z-index: -1;
+  bottom: 0;
+  width: 100%;
+  height: 30%;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #061c52 0 3px,
+      #073b85 4px,
+      #03122e 6px
+    );
+  opacity: .7;
+  border-top: 3px solid #00aaff;
+}
+
+.holo-launch::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  bottom: 0;
+  width: 100%;
+  height: 13%;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0 30px,
+      rgba(0, 255, 70, .12) 32px,
+      transparent 34px 65px
+    ),
+    linear-gradient(0deg, #003c12, #00852c);
+  transform: perspective(200px) rotateX(8deg);
+  transform-origin: bottom;
+}
+
+/* HEADER */
+
+.cinematic-header {
+  position: absolute;
+  top: 3%;
+  left: 2.5%;
+  right: 2.5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: clamp(11px, 2vw, 25px);
+  font-weight: 1000;
+  font-style: italic;
+  letter-spacing: 1px;
+  text-shadow: 0 0 12px #008cff;
+}
+
+.cinematic-header span {
+  color: #ffe600;
+}
+
+/* PLAYERS */
+
+.cinematic-players {
+  position: absolute;
+  top: 2%;
+  left: 4%;
+  right: 4%;
+  height: 52%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  pointer-events: none;
+}
+
+.cinematic-player {
+  width: 16%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  position: relative;
+  filter: drop-shadow(0 0 12px #008cff);
+}
+
+.cinematic-player img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  mask-image: linear-gradient(
+    to bottom,
+    black 65%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    black 65%,
+    transparent 100%
+  );
+}
+
+.player-fallback {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  font-weight: 900;
+  color: #b9eaff;
+  background: linear-gradient(145deg, #0757a8, #06132d);
+}
+
+.player-1,
+.player-6 {
+  height: 78%;
+  margin-top: 9%;
+}
+
+.player-2,
+.player-5 {
+  height: 90%;
+  margin-top: 4%;
+}
+
+.player-3,
+.player-4 {
+  height: 100%;
+}
+
+/* CENTRAL FOOTBALL GLOW */
+
+.champions-ball {
+  position: absolute;
+  top: 3%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: clamp(100px, 20vw, 260px);
+  opacity: .12;
+  filter: drop-shadow(0 0 35px #008cff);
+  z-index: -1;
+}
+
+.champions-glow {
+  position: absolute;
+  top: 13%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50%;
+  height: 40%;
+  border-radius: 50%;
+  border: 5px solid #00aaff55;
+  box-shadow:
+    0 0 35px #007bff,
+    inset 0 0 40px #007bff;
+}
+
+/* MAIN LOGO */
+
+.cinematic-title {
+  position: absolute;
+  top: 36%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 75%;
+  text-align: center;
+  z-index: 3;
+  padding: 15px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 4, 35, .88) 15%,
+    rgba(0, 4, 35, .94) 50%,
+    rgba(0, 4, 35, .88) 85%,
+    transparent
+  );
+  filter: drop-shadow(0 5px 15px #000);
+}
+
+.title-crown {
+  font-size: clamp(30px, 5vw, 65px);
+  color: #ffd700;
+  text-shadow: 0 0 20px #ffb300;
+  margin-bottom: -5px;
+}
+
+.title-small {
+  font-size: clamp(8px, 1.3vw, 15px);
+  letter-spacing: 5px;
+  color: #80dfff;
+  font-weight: bold;
+}
+
+.cinematic-title h1 {
+  font-size: clamp(42px, 10vw, 115px);
+  font-weight: 1000;
+  font-style: italic;
+  line-height: .78;
+  letter-spacing: -3px;
+  color: white;
+  -webkit-text-stroke: 2px #061b4b;
+  text-shadow:
+    3px 5px 0 #00133b,
+    0 0 15px #00aaff,
+    0 0 35px #007bff;
+}
+
+.cinematic-title h1 span {
+  display: block;
+  color: #ffd000;
+  -webkit-text-stroke: 2px #a34b00;
+  text-shadow:
+    3px 5px 0 #713600,
+    0 0 20px #ffb000;
+}
+
+.cinematic-title h2 {
+  font-size: clamp(17px, 3.5vw, 40px);
+  font-weight: 1000;
+  font-style: italic;
+  letter-spacing: 4px;
+  margin-top: 12px;
+}
+
+.cinematic-title h2 strong {
+  color: #00c8ff;
+}
+
+.title-decoration {
+  width: 75%;
+  height: 5px;
+  margin: 12px auto;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    #00aaff,
+    #ffd000,
+    #00aaff,
+    transparent
+  );
+  box-shadow: 0 0 15px #00aaff;
+}
+
+/* TROPHY AND FOOTBALL */
+
+.silver-trophy {
+  position: absolute;
+  left: 2%;
+  bottom: 12%;
+  font-size: clamp(55px, 10vw, 125px);
+  filter: drop-shadow(0 0 20px #00aaff);
+  z-index: 4;
+}
+
+.right-football {
+  position: absolute;
+  right: 3%;
+  bottom: 13%;
+  font-size: clamp(40px, 8vw, 95px);
+  filter: drop-shadow(0 0 20px #00aaff);
+  animation: football-float 3s ease-in-out infinite;
+}
+
+@keyframes football-float {
+  50% {
+    transform: translateY(-12px) rotate(25deg);
   }
 }
 
-/* Landscape layout on smaller screens */
+/* LOADING BAR */
 
-@media (orientation: landscape) and (max-height: 500px) {
-  .holo-launch {
-    padding: 8px 18px;
+.cinematic-loading {
+  position: absolute;
+  z-index: 5;
+  top: 72%;
+  left: 20%;
+  width: 60%;
+  text-align: center;
+}
+
+.cinematic-loading h3 {
+  font-size: clamp(14px, 2.5vw, 27px);
+  font-weight: 1000;
+  font-style: italic;
+  letter-spacing: 3px;
+  text-shadow: 0 0 15px #00aaff;
+}
+
+.cinematic-progress {
+  height: 22px;
+  border: 3px solid white;
+  border-radius: 30px;
+  background: #000923;
+  overflow: hidden;
+  box-shadow: 0 0 18px #00aaff;
+}
+
+.cinematic-progress-fill {
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    #00bd24,
+    #55ff00,
+    #aaff00
+  );
+  box-shadow: 0 0 20px #00ff37;
+  transition: width .2s linear;
+}
+
+.cinematic-loading strong {
+  display: block;
+  text-align: right;
+  font-size: 20px;
+  margin-top: 5px;
+  color: white;
+}
+
+.cinematic-loading p {
+  color: #ffdb00;
+  font-size: clamp(17px, 3vw, 35px);
+  font-weight: bold;
+  font-style: italic;
+  margin-top: 5px;
+}
+
+/* BOTTOM FEATURE BAR */
+
+.cinematic-footer {
+  position: absolute;
+  bottom: 2%;
+  left: 2%;
+  right: 2%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cinematic-footer > div:not(.studio-name) {
+  min-width: 19%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px;
+  border: 1px solid #00aaff;
+  border-radius: 8px;
+  background: linear-gradient(120deg, #001a4d, #001026);
+  box-shadow: 0 0 12px #007bff55;
+}
+
+.cinematic-footer svg {
+  width: 30px;
+  height: 30px;
+  color: #ffd000;
+}
+
+.cinematic-footer span {
+  font-size: clamp(8px, 1.2vw, 14px);
+  font-weight: 1000;
+  font-style: italic;
+}
+
+.studio-name {
+  margin-left: auto;
+  text-align: right;
+  font-weight: 1000;
+  font-style: italic;
+  font-size: clamp(10px, 1.6vw, 18px);
+  text-shadow: 0 0 12px #00aaff;
+}
+
+/* ENTER BUTTON */
+
+.enter-game-button {
+  position: absolute;
+  z-index: 10;
+  top: 88%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 12px 25px;
+  border: 0;
+  border-radius: 7px;
+  color: #00111d;
+  background: linear-gradient(90deg, #00d9ff, #baff00);
+  font-weight: 1000;
+  cursor: pointer;
+  box-shadow: 0 0 20px #00cfff;
+}
+
+/* LANDSCAPE MOBILE */
+
+@media (max-width: 800px) and (orientation: landscape) {
+
+  .cinematic-header {
+    top: 2%;
+    font-size: 11px;
   }
 
-  .launch-hero {
-    min-height: 180px;
-    grid-template-columns: .8fr 1.4fr .4fr;
+  .cinematic-players {
+    top: 5%;
+    height: 53%;
+    left: 2%;
+    right: 2%;
   }
 
-  .messi-feature {
-    height: 175px;
+  .cinematic-title {
+    top: 34%;
+    width: 80%;
   }
 
-  .player-photo {
-    height: 75px;
+  .cinematic-title h1 {
+    font-size: clamp(35px, 8vw, 70px);
   }
 
-  .launch-player {
+  .cinematic-title h2 {
+    font-size: 20px;
+  }
+
+  .cinematic-loading {
+    top: 70%;
+    left: 18%;
+    width: 64%;
+  }
+
+  .cinematic-footer {
+    bottom: 2%;
+  }
+
+  .cinematic-footer > div:not(.studio-name) {
     padding: 5px;
+    min-width: 20%;
   }
 
-  .launch-player h3 {
-    font-size: 10px;
-    margin: 5px 0;
+  .cinematic-footer svg {
+    width: 20px;
+    height: 20px;
   }
 
-  .loading-section {
-    margin: 10px auto;
+  .silver-trophy {
+    bottom: 12%;
   }
 
-  .loading-track {
-    height: 10px;
-  }
-
-  .feature-item {
-    padding: 8px 4px;
-  }
-
-  .launch-footer {
-    margin-top: 10px;
+  .right-football {
+    bottom: 12%;
   }
 }
+
+/* PORTRAIT FALLBACK */
+
+@media (orientation: portrait) {
+
+  .cinematic-players {
+    top: 8%;
+    height: 38%;
+  }
+
+  .cinematic-title {
+    top: 36%;
+    width: 96%;
+  }
+
+  .cinematic-title h1 {
+    font-size: 48px;
+  }
+
+  .cinematic-loading {
+    top: 69%;
+    left: 12%;
+    width: 76%;
+  }
+
+  .cinematic-footer {
+    gap: 4px;
+    bottom: 2%;
+  }
+
+  .cinematic-footer > div:not(.studio-name) {
+    min-width: 0;
+    flex: 1;
+    justify-content: center;
+    padding: 5px 2px;
+  }
+
+  .cinematic-footer span {
+    font-size: 7px;
+  }
+
+  .cinematic-footer svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .studio-name {
+    display: none;
+  }
+
+  .silver-trophy,
+  .right-football {
+    display: none;
+  }
+
+  .enter-game-button {
+    top: 83%;
+  }
+      }
